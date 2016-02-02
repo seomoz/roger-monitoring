@@ -18,7 +18,7 @@
 
 - name: Run statsd in front of influxdb for statsd collection
   command: "docker run --name=statsd-fe-influxdb -p 9125:8125/udp -p 9126:8126 -d --restart=always -e IS_DEBUG_MODE=true -e TARGET_DB=metrics_db -e INFLUXDB_URL=\"\\\"http://{{ inventory_hostname }}:8086\\\"\"
-    -e USERNAME={{ statsd_influxdb_user }} -e PASSWORD={{ statsd_influxdb_passwd }} -e TELEGRAF_HOSTNAME={{ inventory_hostname }} registry.roger.dal.moz.com:5000/roger-telegraf-statsd:0.08"
+    -e USERNAME={{ statsd_influxdb_user }} -e PASSWORD={{ statsd_influxdb_passwd }} -e TELEGRAF_HOSTNAME={{ inventory_hostname }} {{ docker_registry }}/roger-telegraf-statsd:0.08"
   sudo: yes
   tags:
     - monitoring

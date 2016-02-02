@@ -7,7 +7,7 @@
     - monitoring
 
 - name: Download influxdb package
-  get_url: url="http://registry.roger.dal.moz.com:81/roger/pkgs/influxdb_{{ influxdb_version }}_amd64.deb" dest="{{ monitoring_tmp_dir }}"
+  get_url: url="{{ influxdb_download_url_path }}influxdb_{{ influxdb_version }}_amd64.deb" dest="{{ monitoring_tmp_dir }}"
   sudo: yes
   tags:
     - monitoring
@@ -74,7 +74,7 @@
     - monitoring
 
 # Disabled.  I've been unable to have influx log to the files I want.
-# 
+#
 # - name: Put influxdb logs under logrotate control
 #  template: src=influxdb.logrotate.j2 dest=/etc/logrotate.d/influxdb
 #  sudo: yes
@@ -87,4 +87,3 @@
   sudo: yes
   tags:
     - monitoring
-

@@ -17,7 +17,7 @@
     - statsd-repeater
 
 - name: Run statsd repeater
-  command: "docker run --name=statsd-repeater -p 8125:8125/udp -p 8126:8126 -d --restart=always registry.roger.dal.moz.com:5000/moz-statsd:v0.24"
+  command: "docker run --name=statsd-repeater -p 8125:8125/udp -p 8126:8126 -d --restart=always {{ docker_registry }}/moz-statsd:v0.24"
   sudo: yes
   tags:
     - monitoring
