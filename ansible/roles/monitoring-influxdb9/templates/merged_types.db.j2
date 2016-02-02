@@ -1,0 +1,6 @@
+# This types.db file was created by concatenating multiple types.db files
+{% for content in collectd_types_dbs_contents %}
+# Start of file {{ loop.index }}
+{{ content }}
+# End of file {{ loop.index }}
+{% endfor %}

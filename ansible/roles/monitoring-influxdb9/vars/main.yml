@@ -1,0 +1,10 @@
+---
+
+monitoring_tmp_dir: "{{ base_monitoring_dir }}/tmp"
+influx_data_dir: "{{ base_monitoring_dir }}/influxdb"
+
+influxdb_version: "0.9.6.1"
+
+collectd_types_dbs_contents:
+    - "{{ lookup('file', 'types.db') }}"
+    - "{{ lookup('file', '../../monitoring-agent/files/dockerplugin.db') }}"

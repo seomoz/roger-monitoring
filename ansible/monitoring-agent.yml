@@ -1,0 +1,7 @@
+---
+# Main task for setting up monitoring agents (collectd and similar/related) on the machines.
+
+- hosts: machines
+
+  roles:
+    - monitoring-agent

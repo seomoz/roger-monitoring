@@ -1,0 +1,21 @@
+---
+# Main task for setting up influxdb9 outside the cluster.
+
+- hosts: influxdb9_servers
+
+  vars_prompt:
+    - name: "statsd_influxdb_user"
+      prompt: "Please enter InfluxDB username to use for writing statsd data"
+      private: no
+
+    - name: "statsd_influxdb_passwd"
+      prompt: "Please enter InfluxDB password to use for writing statsd data"
+      private: yes
+
+  roles:
+    - monitoring-influxdb9
+    - monitoring-statsd-fe-influxdb
+
+- hosts: statsd_repeater_servers
+  roles:
+    - monitoring-statsd-repeater

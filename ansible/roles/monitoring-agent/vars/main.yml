@@ -1,0 +1,25 @@
+---
+# if one wants to replicate in more than one influxDB all you need to do is to add a entry here in the list influxdb_host
+
+influxdb_host:
+      - "influxdb91.roger.dal.moz.com"
+      - "influxdb92.roger.dal.moz.com"
+      - "influxdb93.roger.dal.moz.com"
+      - "influxdb94.roger.dal.moz.com"
+collectd_install_recommends: True
+collectd_interval_seconds: 20
+collectd_load_plugins:
+      - cpu
+      - disk
+      - df
+      - load
+      - memory
+      - network
+      - processes
+      - swap
+      - uptime
+      - vmem
+collectd_log_dir:  "{{ base_data_dir }}/collectd"
+collectd_python_plugin_dir:  "/usr/share/collectd/python"
+
+mozstash_filename: 10-mozstash::emitter-forward-to-collector.conf

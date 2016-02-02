@@ -1,0 +1,15 @@
+description     "InfluxDB"
+
+limit nofile 65536 65536
+
+start on (net-device-up and local-filesystems and runlevel [2345])
+stop on runlevel [!2345]
+
+respawn
+respawn limit 10 5
+
+console log
+setuid influxdb
+setgid influxdb
+
+exec /usr/bin/influxd -config /etc/influxdb/influxdb.conf

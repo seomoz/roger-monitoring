@@ -1,0 +1,192 @@
+# Config file for collectd(1).
+# Some plugins need additional configuration and are disabled by default.
+# Please read collectd.conf(5) for details.
+# verifying if the collectd has issues because of no sudo in handler
+# You should also read /usr/share/doc/collectd-core/README.Debian.plugins
+# before enabling any more plugins.
+
+FQDNLookup false
+#BaseDir "/var/lib/collectd"
+#PluginDir "/usr/lib/collectd"
+#TypesDB "/usr/share/collectd/types.db" "/etc/collectd/my_types.db"
+TypesDB "/usr/share/collectd/types.db" "/usr/share/collectd/python/dockerplugin.db"
+
+hostname "{{ansible_hostname}}.{{ env }}"
+Interval {{ collectd_interval_seconds }}
+
+#Timeout 2
+#ReadThreads 5
+#WriteThreads 5
+
+# adding this to get collectd specific log
+LoadPlugin "logfile"
+<Plugin "logfile">
+  LogLevel "info"
+  File "{{ collectd_log_dir }}/collectd.log"
+  Timestamp true
+</Plugin>
+
+{% for plugin in collectd_load_plugins %}
+LoadPlugin {{ plugin }}
+{% endfor %}
+
+# Get free space for several important mountpoints.
+<Plugin "df">
+  MountPoint "/"
+  MountPoint "/data"
+  MountPoint "/data/mesos"
+  MountPoint "/data/monitoring"
+  MountPoint "/data/san-mount"
+  MountPoint "/home"
+  MountPoint "/san-mount"
+  ValuesPercentage true
+</Plugin>
+
+# Track influxd processes so we can alert on failure
+<Plugin "processes">
+  Process "influxd"
+</Plugin>
+
+ # Below lines for adding python plugins
+Loadplugin python
+<Plugin "python">
+    LogTraces true
+</Plugin>
+
+# values will be reported in percentage under "cpu_value" measurement
+<Plugin "cpu">
+   ReportByState true
+   ReportByCpu   true
+   ValuesPercentage true
+</Plugin>
+
+{% if is_in_masters is defined %}
+# mesos-master python plugin definition
+<Plugin "python">
+ModulePath "{{ collectd_python_plugin_dir }}"
+Import "zk-collectd"
+  <Module "zk-collectd">
+    Hosts "localhost"
+    Port 2181
+    Instance "{{ env }}"
+  </Module>
+</Plugin>
+
+<Plugin "python">
+ModulePath "{{ collectd_python_plugin_dir }}"
+Import "mesos-master"
+  <Module "mesos-master">
+      Host {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}
+      Port 5050
+      Verbose false
+      Version "0.21.0"
+  </Module>
+</Plugin>
+
+<Plugin "python">
+ModulePath "{{ collectd_python_plugin_dir }}"
+Import "chronos"
+  <Module "chronos">
+      Host "localhost"
+      Port 4400
+      Verbose false
+  </Module>
+</Plugin>
+{% endif %}
+
+{% if is_in_slaves is defined %}
+# mesos-slave python plugin definition
+<Plugin "python">
+ModulePath "{{ collectd_python_plugin_dir }}"
+Import "mesos-slave"
+   <Module "mesos-slave">
+       Host {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}
+       Port 5051
+       Verbose false
+       Version "0.21.0"
+   </Module>
+</Plugin>
+
+<Plugin python>
+  ModulePath "{{ collectd_python_plugin_dir }}"
+  Import "dockerplugin"
+
+  <Module dockerplugin>
+    BaseURL "unix://var/run/docker.sock"
+    Interval 30
+    Timeout 120
+    failure_count   5
+    sleep_interval  10
+  </Module>
+</Plugin>
+
+{% endif %}
+#bamboo python plugin to check the status
+
+{% if is_in_bamboo_servers is defined %}
+<Plugin python>
+  ModulePath "{{ collectd_python_plugin_dir }}"
+  Import "bamboo_status"
+  <Module "bamboo_status">
+    Host {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}
+    Port 8000
+    Verbose false
+  </Module>
+</Plugin>
+{% endif %}
+
+
+#bamboo python plugin to send the confighash
+
+{% if is_in_bamboo_servers is defined %}
+<Plugin python>
+  ModulePath "{{ collectd_python_plugin_dir }}"
+  Import "bamboo_confighash"
+  <Module "bamboo_confighash">
+    Host {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}
+    Port 8000
+    Verbose false
+  </Module>
+</Plugin>
+{% endif %}
+
+# Enable HAProxy plugin
+{% if is_in_haproxy is defined %}
+<Plugin python>
+    ModulePath "{{ collectd_python_plugin_dir }}"
+
+    Import "haproxy"
+
+    <Module haproxy>
+      Socket "/run/haproxy/admin.sock"
+      ProxyMonitor "server"
+      ProxyMonitor "backend"
+      Verbose false
+    </Module>
+</Plugin>
+{% endif %}
+
+# Change to multicast the collectD log to multiple influxDb
+# add it to vars list
+<Plugin "network">
+  {% for host in influxdb_host %}
+  Server "{{ host }}" "8096"
+  {% endfor %}
+</Plugin>
+
+<Include "/etc/collectd/collectd.conf.d">
+  Filter "*.conf"
+</Include>
+
+{% if is_in_marathon_servers is defined %}
+<Plugin "python">
+    ModulePath "{{ collectd_python_plugin_dir }}"
+    Import "marathon"
+    <Module "marathon">
+        Host "localhost"
+        Port 8080
+        Verbose false
+        CleanMetrics true
+    </Module>
+</Plugin>
+{% endif %}

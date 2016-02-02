@@ -1,0 +1,90 @@
+- name: Create directories which need to exist if necessary
+  file: path={{ item }} state=directory owner=root
+  with_items:
+    - "{{ monitoring_tmp_dir }}"
+  sudo: yes
+  tags:
+    - monitoring
+
+- name: Download influxdb package
+  get_url: url="http://registry.roger.dal.moz.com:81/roger/pkgs/influxdb_{{ influxdb_version }}_amd64.deb" dest="{{ monitoring_tmp_dir }}"
+  sudo: yes
+  tags:
+    - monitoring
+
+- name: Install influxdb
+  apt: deb="{{ monitoring_tmp_dir }}/influxdb_{{ influxdb_version }}_amd64.deb"
+  sudo: yes
+  notify: restart influxdb9
+  tags:
+    - monitoring
+
+- name: Configure influxdb
+  template: src="influxdb.conf.j2" dest="/etc/influxdb/influxdb.conf"
+  sudo: yes
+  notify: restart influxdb9
+  tags:
+   - monitoring
+
+# Disabled.  Apparently this configuration file does not cause influx to write
+# to the specified log files.  Bug in 0.9.2?  Leaving it in for further
+# experimentation.
+# - name: Configure influxdb defaults
+#  template: src="influxdb.default.j2" dest="/etc/default/influxdb"
+#  sudo: yes
+#  notify: restart influxdb9
+#  tags:
+#    - monitoring
+
+- name: Remove init.d script for influxdb
+  file: path=/etc/init.d/influxdb state=absent
+  sudo: yes
+  tags:
+    - monitoring
+
+- name: Install upstart script for influxdb
+  template: src=influxdb.conf.init.j2 dest=/etc/init/influxdb.conf
+  sudo: yes
+  notify: restart influxdb9
+  tags:
+    - monitoring
+
+- name: Create influx data directories that need to exist, if necessary
+  file: path={{ item }} state=directory group=influxdb owner=influxdb
+  with_items:
+    - "{{ influx_data_dir }}"
+    - "{{ influx_data_dir }}/data"
+    - "{{ influx_data_dir }}/hh"
+    - "{{ influx_data_dir }}/log"
+    - "{{ influx_data_dir }}/meta"
+    - "{{ influx_data_dir }}/plugin"
+    - "{{ influx_data_dir }}/plugin/collectd"
+    - "{{ influx_data_dir }}/wal"
+  sudo: yes
+  notify: restart influxdb9
+  tags:
+    - monitoring
+
+# Creating a concatenated types.db (as the influxdb collectd plugin currently does not support multiple typesdb file)
+- name: Create merged types.db for collectd plugin
+  template: src=merged_types.db.j2 dest="{{ influx_data_dir }}/plugin/collectd/types.db"
+  sudo: yes
+  notify: restart influxdb9
+  tags:
+    - monitoring
+
+# Disabled.  I've been unable to have influx log to the files I want.
+# 
+# - name: Put influxdb logs under logrotate control
+#  template: src=influxdb.logrotate.j2 dest=/etc/logrotate.d/influxdb
+#  sudo: yes
+#  tags:
+#    - monitoring
+
+# Temporary log rotator until the influxdb default file is respected by influx on start
+- name: Rotate influxdb log (temp)
+  template: src=influxdb.logrotate.tmp.j2 dest=/etc/logrotate.d/influxdb
+  sudo: yes
+  tags:
+    - monitoring
+

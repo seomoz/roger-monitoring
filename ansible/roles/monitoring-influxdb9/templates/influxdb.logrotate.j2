@@ -1,0 +1,8 @@
+{{ influx_data_dir }}/log/log.*.txt {
+  size 100M
+  rotate 12
+  notifempty
+  missingok
+  compress
+  copytruncate
+}

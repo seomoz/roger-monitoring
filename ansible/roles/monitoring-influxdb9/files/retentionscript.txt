@@ -1,0 +1,23 @@
+use metrics_db
+
+alter retention policy default on metrics_db duration 14d
+
+drop retention policy _1m on metrics_db
+drop retention policy _10m on metrics_db
+drop retention policy _1h on metrics_db
+drop retention policy _1d on metrics_db
+
+create retention policy  _1m on metrics_db duration  30d replication 1
+create retention policy _10m on metrics_db duration  90d replication 1
+# create retention policy  _1h on metrics_db duration 180d replication 1
+# create retention policy  _1d on metrics_db duration 365d replication 1
+
+drop continuous query downsample_1m  on metrics_db
+drop continuous query downsample_10m on metrics_db
+drop continuous query downsample_1h  on metrics_db
+drop continuous query downsample_1d  on metrics_db
+
+CREATE CONTINUOUS QUERY downsample_1m  on metrics_db begin SELECT last(value) as last, mean(value) as mean into  _1m.:MEASUREMENT from  /.*/ group by time(1m), * END
+CREATE CONTINUOUS QUERY downsample_10m on metrics_db begin SELECT last(last)  as last, mean(mean)  as mean into _10m.:MEASUREMENT from  _1m./.*/ group by time(10m), * END
+# CREATE CONTINUOUS QUERY downsample_1h  on metrics_db begin SELECT last(last)  as last, mean(mean)  as mean into  _1h.:MEASUREMENT from _10m./.*/ group by time(1h), * END
+# CREATE CONTINUOUS QUERY downsample_1d  on metrics_db begin SELECT last(last)  as last, mean(mean)  as mean into  _1d.:MEASUREMENT from  _1h./.*/ group by time(1d), * END

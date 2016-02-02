@@ -1,0 +1,28 @@
+- name: Stop statsd-fe-influxdb (if needed)
+  command: "docker stop statsd-fe-influxdb"
+  sudo: yes
+  ignore_errors: yes
+  tags:
+    - monitoring
+    - statsd
+    - statsd-fe-influxdb
+
+- name: Remove statsd-fe-influxdb (if there)
+  command: "docker rm statsd-fe-influxdb"
+  sudo: yes
+  ignore_errors: yes
+  tags:
+    - monitoring
+    - statsd
+    - statsd-fe-influxdb
+
+- name: Run statsd in front of influxdb for statsd collection
+  command: "docker run --name=statsd-fe-influxdb -p 9125:8125/udp -p 9126:8126 -d --restart=always -e IS_DEBUG_MODE=true -e TARGET_DB=metrics_db -e INFLUXDB_URL=\"\\\"http://{{ inventory_hostname }}:8086\\\"\"
+    -e USERNAME={{ statsd_influxdb_user }} -e PASSWORD={{ statsd_influxdb_passwd }} -e TELEGRAF_HOSTNAME={{ inventory_hostname }} registry.roger.dal.moz.com:5000/roger-telegraf-statsd:0.08"
+  sudo: yes
+  tags:
+    - monitoring
+    - statsd
+    - statsd-fe-influxdb
+
+#TODO: Add/enable a probe so as to monitor this particular statsd instance and alert on failure
