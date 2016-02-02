@@ -1,23 +1,23 @@
 ---
 # Monitoring agents (like collectd) are needed to gather and send system statistics for monitoring and alerting
 
-# Sending logs to mozstash
-- name: Update configuration to send syslogs to mozstash
-  copy: src="{{ mozstash_filename }}" dest="/etc/rsyslog.d/"
+# Sending logs to logstash
+- name: Update configuration to send syslogs to logstash
+  template: src=logstash-emitter-forward-to-collector.conf.j2 dest="/etc/rsyslog.d/{{ logstash_dest_filename }}"
   sudo: yes
-  when: disable_mozstash is not defined or not disable_mozstash
+  when: disable_logstash is not defined or not disable_logstash
   notify: restart rsyslog
   tags:
-    - mozstash
+    - logstash
 
-# Don't send logs to mozstash if disable_mozstash is True (from command line this can be done using -e "disable_mozstash=0")
-- name: Remove configuration to send syslogs to mozstash
-  file: name="/etc/rsyslog.d/{{ mozstash_filename }}" state=absent
-  when: disable_mozstash is defined and disable_mozstash
+# Don't send logs to logstash if disable_logstash is True (from command line this can be done using -e "disable_logstash=0")
+- name: Remove configuration to send syslogs to logstash
+  file: name="/etc/rsyslog.d/{{ logstash_dest_filename }}" state=absent
+  when: disable_logstash is defined and disable_logstash
   sudo: yes
   notify: restart rsyslog
   tags:
-    - mozstash
+    - logstash
 
 - name: Create directories which need to exist, if necessary
   file: path={{ item }} state=directory owner=root
