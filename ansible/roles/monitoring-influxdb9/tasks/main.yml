@@ -87,3 +87,15 @@
   sudo: yes
   tags:
     - monitoring
+
+# Copy Retention policies and Continuous queries script to influx host
+- name: Copying retention policies and continuous queries on influx host
+  template: src=influxdb.retention.j2 dest=/tmp/influxdb.retention.sh  
+  tags:
+    - retention_policy
+
+# Applying retention policies and continuous queries on influx database
+- name: Applying retention policies and continuous queries on influx database
+  command: sh /tmp/influxdb.retention.sh
+  tags:
+    - retention_policy
