@@ -7,3 +7,6 @@
 [submodule "ansible/roles/monitoring-agent/files/collectd-plugins/docker"]
 	path = ansible/roles/monitoring-agent/files/collectd-plugins/docker
 	url = git@github.com:seomoz/docker-collectd-plugin.git
+[submodule "ansible/roles/monitoring-agent/files/collectd-plugins/collectd-haproxy"]
+	path = ansible/roles/monitoring-agent/files/collectd-plugins/collectd-haproxy
+	url = https://github.com/seomoz/collectd-haproxy.git
