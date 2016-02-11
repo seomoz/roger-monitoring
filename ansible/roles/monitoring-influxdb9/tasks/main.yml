@@ -102,3 +102,18 @@
     - rm /tmp/influxdb.retention.sh
   tags:
     - retention_policy
+
+# Copy Influx users script to influx hosts
+- name: Influx users script to influx hosts
+  template: src=influxdb.users.sh.j2  dest=/tmp/influxdb.users.sh
+  tags:
+    - influx_users
+
+# Creating admin and non admin users with privileges on influx hosts
+- name: Creating admin and non admin users with privileges on influx hosts
+  command: "{{ item }}"
+  with_items:
+    - sh /tmp/influxdb.users.sh 
+    - rm /tmp/influxdb.users.sh
+  tags:
+    - influx_users

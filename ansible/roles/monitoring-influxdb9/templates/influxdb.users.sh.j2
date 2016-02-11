@@ -1,0 +1,4 @@
+influx -database "metrics_db" -execute "create user {{ influx_admin_user }} with password '{{ influx_admin_password }}' with all privileges"
+
+influx -database "metrics_db" -username {{ influx_admin_user }} -password {{ influx_admin_password }} -execute "create user {{ influx_grafana_user }} with password '{{ influx_grafana_password }}'"
+influx -database "metrics_db" -username {{ influx_admin_user }} -password {{ influx_admin_password }} -execute "grant read on metrics_db to {{ influx_grafana_user }}"  
