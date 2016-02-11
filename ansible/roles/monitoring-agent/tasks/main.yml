@@ -141,7 +141,7 @@
 # for haproxy plugin stats collection
 - name: Copy the required python plugin HAProxy
   when: is_in_haproxy is defined
-  copy: src=haproxy.py dest="{{ collectd_python_plugin_dir }}"
+  copy: src=collectd-plugins/collectd-haproxy/haproxy.py dest="{{ collectd_python_plugin_dir }}"
   sudo: yes
   notify: restart collectd
   tags:

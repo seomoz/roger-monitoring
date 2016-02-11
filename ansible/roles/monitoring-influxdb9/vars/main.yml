@@ -7,4 +7,4 @@ influxdb_version: "0.9.6.1"
 
 collectd_types_dbs_contents:
     - "{{ lookup('file', 'types.db') }}"
-    - "{{ lookup('file', '../../monitoring-agent/files/dockerplugin.db') }}"
+    - "{{ lookup('file', '../../monitoring-agent/files/collectd-plugins/docker/dockerplugin.db') }}"
