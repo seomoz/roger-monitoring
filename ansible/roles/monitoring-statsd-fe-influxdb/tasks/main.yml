@@ -1,28 +1,37 @@
-- name: Stop statsd-fe-influxdb (if needed)
-  command: "docker stop statsd-fe-influxdb"
+- name: Create directories which need to exist if necessary
+  file: path={{ item }} state=directory owner=root
+  with_items:
+    - "{{ monitoring_tmp_dir }}"
   sudo: yes
-  ignore_errors: yes
   tags:
     - monitoring
     - statsd
     - statsd-fe-influxdb
 
-- name: Remove statsd-fe-influxdb (if there)
-  command: "docker rm statsd-fe-influxdb"
+- name: Download telegraf package
+  get_url: url="http://get.influxdb.org/telegraf/telegraf_{{ telegraf_version }}_amd64.deb" dest="{{ monitoring_tmp_dir }}"
   sudo: yes
-  ignore_errors: yes
   tags:
     - monitoring
     - statsd
     - statsd-fe-influxdb
 
-- name: Run statsd in front of influxdb for statsd collection
-  command: "docker run --name=statsd-fe-influxdb -p 9125:8125/udp -p 9126:8126 -d --restart=always -e IS_DEBUG_MODE=true -e TARGET_DB=metrics_db -e INFLUXDB_URL=\"\\\"http://{{ inventory_hostname }}:8086\\\"\"
-    -e USERNAME={{ statsd_influxdb_user }} -e PASSWORD={{ statsd_influxdb_passwd }} -e TELEGRAF_HOSTNAME={{ inventory_hostname }} {{ docker_registry }}/roger-telegraf-statsd:0.08"
+- name: Install telegraf
+  apt: deb="{{ monitoring_tmp_dir }}/telegraf_{{ telegraf_version }}_amd64.deb"
   sudo: yes
+  notify: restart telegraf
   tags:
     - monitoring
     - statsd
     - statsd-fe-influxdb
+
+- name: Configure telegraf
+  template: src="telegraf.conf.j2" dest="/etc/telegraf/telegraf.conf"
+  sudo: yes
+  notify: restart telegraf
+  tags:
+   - monitoring
+   - statsd
+   - statsd-fe-influxdb
 
 #TODO: Add/enable a probe so as to monitor this particular statsd instance and alert on failure

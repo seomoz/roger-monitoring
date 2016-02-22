@@ -1,0 +1,6 @@
+---
+
+monitoring_tmp_dir: "{{ base_monitoring_dir }}/tmp"
+telegraf_version: "0.10.3-1"
+target_db: "metrics_db"
+debug_mode: "true"
