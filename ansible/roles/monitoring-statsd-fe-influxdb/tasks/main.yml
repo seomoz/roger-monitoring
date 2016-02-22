@@ -9,7 +9,7 @@
     - statsd-fe-influxdb
 
 - name: Download telegraf package
-  get_url: url="http://get.influxdb.org/telegraf/telegraf_{{ telegraf_version }}_amd64.deb" dest="{{ monitoring_tmp_dir }}"
+  get_url: url="{{ telegraf_download_url_path_prefix }}/telegraf_{{ telegraf_version }}_amd64.deb" dest="{{ monitoring_tmp_dir }}"
   sudo: yes
   tags:
     - monitoring

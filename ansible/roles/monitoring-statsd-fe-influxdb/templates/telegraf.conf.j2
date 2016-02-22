@@ -82,7 +82,7 @@
 # Statsd Server
 [statsd]
   # Address and port to host UDP listener on
-  service_address = ":9125"
+  service_address = ":{{ telegraf_port }}"
   # Delete gauges every interval (default=false)
   delete_gauges = false
   # Delete counters every interval (default=false)

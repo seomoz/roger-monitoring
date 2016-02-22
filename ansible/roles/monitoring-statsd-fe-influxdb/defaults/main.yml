@@ -1,0 +1,3 @@
+---
+
+influxdb_download_url_path_prefix: http://get.influxdb.org/telegraf
