@@ -26,7 +26,7 @@
     - statsd-fe-influxdb
 
 - name: Configure telegraf
-  template: src="telegraf.conf.j2" dest="/etc/telegraf/telegraf.conf"
+  template: src="telegraf.conf.j2" dest="/etc/opt/telegraf/telegraf.conf"
   sudo: yes
   notify: restart telegraf
   tags:
