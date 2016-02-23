@@ -1,0 +1,9 @@
+---
+
+monitoring_tmp_dir: "{{ base_monitoring_dir }}/tmp"
+telegraf_version: "0.2.4"
+target_db: "metrics_db"
+debug_mode: "true"
+
+#8125 has the actual stasd endpoint (repeaters). This is the port where the repeaters send the data to for each influxdb.
+statsd_service_port: "9125"
