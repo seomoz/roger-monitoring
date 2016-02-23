@@ -6,4 +6,4 @@ target_db: "metrics_db"
 debug_mode: "true"
 
 #8125 has the actual stasd endpoint (repeaters). This is the port where the repeaters send the data to for each influxdb.
-telegraf_port: "9125"
+statsd_service_port: "9125"
