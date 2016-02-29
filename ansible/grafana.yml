@@ -1,0 +1,7 @@
+---
+# Main task for setting up Grafana on the given hosts.
+
+- hosts: grafana
+
+  roles:
+    - grafana
