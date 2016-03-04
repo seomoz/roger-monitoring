@@ -34,4 +34,21 @@
    - statsd
    - statsd-fe-influxdb
 
+- name: Remove init.d script for telgraf
+  file: path=/etc/init.d/telegraf state=absent
+  sudo: yes
+  tags:
+    - monitoring
+    - statsd
+    - statsd-fe-influxdb
+
+- name: Install upstart script for telegraf
+  template: src=telegraf.conf.init.j2 dest=/etc/init/telegraf.conf
+  sudo: yes
+  notify: restart telegraf
+  tags:
+    - monitoring
+    - statsd
+    - statsd-fe-influxdb
+
 #TODO: Add/enable a probe so as to monitor this particular statsd instance and alert on failure
