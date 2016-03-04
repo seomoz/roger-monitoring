@@ -1,0 +1,15 @@
+description     "Telegraf"
+
+limit nofile 65536 65536
+
+start on (net-device-up and local-filesystems and runlevel [2345])
+stop on runlevel [!2345]
+
+respawn
+respawn limit 10 5
+
+console none
+setuid telegraf
+setgid telegraf
+
+exec /opt/telegraf/telegraf -pidfile /var/run/telegraf/telegraf.pid -config /etc/opt/telegraf/telegraf.conf -configdirectory /etc/opt/telegraf/telegraf.d
