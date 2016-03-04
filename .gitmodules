@@ -1,3 +1,6 @@
+[submodule "ansible/roles/monitoring-agent/files/collectd-plugins/marathon"]
+	path = ansible/roles/monitoring-agent/files/collectd-plugins/marathon
+	url = git@github.com:vmahedia/collectd-marathon.git
 [submodule "ansible/roles/monitoring-agent/files/collectd-plugins/chronos"]
 	path = ansible/roles/monitoring-agent/files/collectd-plugins/chronos
 	url = git@github.com:vmahedia/collectd-chronos.git
