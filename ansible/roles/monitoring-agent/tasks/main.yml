@@ -49,6 +49,13 @@
   tags:
     - monitoring
 
+- name: Update package repo cache
+  apt: update_cache=yes
+  sudo: yes
+  tags:
+    - packages
+    - update_cache
+
 - name: Install collectd
   apt: name=collectd force=yes install_recommends="{{ collectd_install_recommends }}" state=latest
   sudo: yes
