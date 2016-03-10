@@ -80,7 +80,7 @@
 ###############################################################################
 
 # Statsd Server
-[statsd]
+[[inputs.statsd]]
   # Address and port to host UDP listener on
   service_address = ":{{ statsd_service_port }}"
   # Delete gauges every interval (default=false)
@@ -93,6 +93,22 @@
   delete_timings = true
   # Percentiles to calculate for timing & histogram stats
   percentiles = [90]
+
+  ## convert measurement names, "." to "_" and "-" to "__"
+  # convert_names = true
+
+  ### If matching multiple measurement files, this string will be used to join the matched values.
+  # separator = "_"
+
+  # New configs that come in with Telegraf 0.10.x
+  #
+  name_prefix = "statsd_"
+  # name_suffix = "_metric"
+  # name_override = "statsd_metric"
+  #
+  # [inputs.cpu.tags]
+  #   tag1 = "statsd"
+  #   tag2 = "metric"
 
   templates = [
       "nsq.*.topic.*.channel.* app.host.measurement.topic_name.measurement.channel_name.measurement*",
@@ -110,3 +126,7 @@
   # calculation of percentiles. Raising this limit increases the accuracy
   # of percentiles but also increases the memory usage and cpu time.
   percentile_limit = 1000
+
+  ## UDP packet size for the server to listen for. This will depend on the size
+  ## of the packets that the client is sending, which is usually 1500 bytes.
+  udp_packet_size = 1500

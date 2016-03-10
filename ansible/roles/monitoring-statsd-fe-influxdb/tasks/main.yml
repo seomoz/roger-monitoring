@@ -25,8 +25,20 @@
     - statsd
     - statsd-fe-influxdb
 
+- name: Create telegraf directories that need to exist, if necessary
+  file: path={{ item }} state=directory group=telegraf owner=telegraf
+  with_items:
+    - "/var/run/telegraf"
+    - "/etc/telegraf"
+  sudo: yes
+  notify: restart telegraf
+  tags:
+    - monitoring
+    - statsd
+    - statsd-fe-influxdb
+
 - name: Configure telegraf
-  template: src="telegraf.conf.j2" dest="/etc/opt/telegraf/telegraf.conf"
+  template: src="telegraf.conf.j2" dest="/etc/telegraf/telegraf.conf"
   sudo: yes
   notify: restart telegraf
   tags:
