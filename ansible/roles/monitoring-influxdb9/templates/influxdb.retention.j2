@@ -10,7 +10,7 @@
   influx -execute "drop continuous query downsample_1m  on {{ database }}"
   influx -execute "drop continuous query downsample_10m on {{ database }}"
 
-  influx -execute "CREATE CONTINUOUS QUERY downsample_1m  on {{ database }} begin SELECT last(value) as last, mean(value) as value into  _1m.:MEASUREMENT from  /.*/ group by time(1m), * END"
-  influx -execute "CREATE CONTINUOUS QUERY downsample_10m on {{ database }} begin SELECT last(last)  as last, mean(value)  as value into _10m.:MEASUREMENT from  _1m./.*/ group by time(10m), * END"
+  influx -execute "CREATE CONTINUOUS QUERY downsample_1m  on {{ database }} begin SELECT last(value) as last, mean(value) as value into  _1m.:MEASUREMENT from  /.*/ where metric_type != 'timing' group by time(1m), * END"
+  influx -execute "CREATE CONTINUOUS QUERY downsample_10m on {{ database }} begin SELECT last(last)  as last, mean(value)  as value into _10m.:MEASUREMENT from  _1m./.*/ where metric_type != 'timing' group by time(10m), * END"
 
 {% endfor %}
