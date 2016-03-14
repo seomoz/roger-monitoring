@@ -12,4 +12,4 @@ console none
 setuid telegraf
 setgid telegraf
 
-exec /opt/telegraf/telegraf -pidfile /var/run/telegraf/telegraf.pid -config /etc/opt/telegraf/telegraf.conf -configdirectory /etc/opt/telegraf/telegraf.d
+exec /usr/bin/telegraf -pidfile /var/run/telegraf/telegraf.pid -config /etc/telegraf/telegraf.conf -configdirectory /etc/telegraf/telegraf.d
