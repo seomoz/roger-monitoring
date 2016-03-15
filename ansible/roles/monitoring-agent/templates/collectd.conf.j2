@@ -184,7 +184,7 @@ Import "mesos-slave"
     ModulePath "{{ collectd_python_plugin_dir }}"
     Import "marathon"
     <Module "marathon">
-        Host "localhost"
+        Host "{% if marathon_auth_enable is defined and marathon_auth_enable|bool %}{{ marathon_collectd_user }}:{{ marathon_collectd_pass }}@{% endif %}localhost"
         Port 8080
         Verbose false
         CleanMetrics true
