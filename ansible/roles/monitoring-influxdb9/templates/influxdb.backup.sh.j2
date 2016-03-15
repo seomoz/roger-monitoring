@@ -1,0 +1,35 @@
+#!/bin/bash
+
+TIME_NOW=$(date --rfc-3339=seconds | sed 's/ /T/')
+BACKUP_DIR="{{ influx_backup_dir }}"
+FILE="$BACKUP_DIR/last_backup_timestamp"
+DATABASES="{{ databases_to_backup }}"
+
+echo "Starting backup at $TIME_NOW."
+
+if [ -w "$FILE" ];
+then
+   LAST_TIMESTAMP=$(cat $FILE)
+   echo "Backup is being done since $LAST_TIMESTAMP"
+   for database in $DATABASES
+   do
+     $(influxd backup -database $database -since $LAST_TIMESTAMP $BACKUP_DIR)
+   done
+else
+   echo "File $FILE does not exist or is not writable. Doing a complete backup."
+   #Cleanup existing files in backup directory
+   files_exists=$( ls $BACKUP_DIR/ | wc -l )
+   if [ $files_exists != 0 ];
+   then
+     command="rm -f $BACKUP_DIR/*"
+     eval $command
+   fi
+
+   for database in $DATABASES
+   do
+     $(influxd backup -database $database $BACKUP_DIR)
+   done
+fi
+
+echo "Writing the new timestamp: $TIME_NOW to backup_timestamp file $FILE"
+echo "$TIME_NOW" > $FILE
