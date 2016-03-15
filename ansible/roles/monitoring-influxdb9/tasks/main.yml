@@ -60,6 +60,7 @@
     - "{{ influx_data_dir }}/plugin"
     - "{{ influx_data_dir }}/plugin/collectd"
     - "{{ influx_data_dir }}/backup"
+    - "{{ influx_data_dir }}/scripts"
     - "{{ influx_data_dir }}/wal"
   sudo: yes
   notify: restart influxdb9
@@ -121,13 +122,13 @@
 
 # Copy Influx backup script to influx hosts
 - name: Influx backup script to influx hosts
-  template: src=influxdb.backup.sh.j2  dest=/tmp/influxdb.backup.sh mode=0775
+  template: src=influxdb.backup.sh.j2  dest={{ influx_data_dir }}/scripts/influxdb.backup.sh mode=0775
   tags:
     - influx_backup
 
 # Running backup script as a cronjob on influx hosts
 - name: Running backup script as a cronjob on influx hosts
-  lineinfile: dest=/etc/crontab line="59 23  * * *   root    sh /tmp/influxdb.backup.sh"
+  lineinfile: dest=/etc/crontab line="59 23  * * *   root    sh {{ influx_data_dir }}/scripts/influxdb.backup.sh"
   sudo: yes
   tags:
     - influx_backup
