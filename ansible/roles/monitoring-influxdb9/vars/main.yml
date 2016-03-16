@@ -2,7 +2,6 @@
 
 monitoring_tmp_dir: "{{ base_monitoring_dir }}/tmp"
 influx_data_dir: "{{ base_monitoring_dir }}/influxdb"
-influx_backup_dir: "{{ base_monitoring_dir }}/backup"
 
 influxdb_version: "0.10.1-1"
 

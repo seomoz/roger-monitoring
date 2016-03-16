@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TIME_NOW=$(date --rfc-3339=seconds | sed 's/ /T/')
-BACKUP_DIR="{{ influx_backup_dir }}"
+BACKUP_DIR="{{ influx_data_dir }}/backup"
 FILE="$BACKUP_DIR/last_backup_timestamp"
 DATABASES="{{ databases_to_backup }}"
 
@@ -13,10 +13,38 @@ then
    echo "Backup is being done since $LAST_TIMESTAMP"
    for database in $DATABASES
    do
-     $(influxd backup -database $database -since $LAST_TIMESTAMP $BACKUP_DIR)
+     $(influxd backup -database $database -since $LAST_TIMESTAMP $BACKUP_DIR 2>&1 | tee $BACKUP_DIR/$database.log)
+     backup_result=$(tail -1 $BACKUP_DIR/$database.log)
+     echo $backup_result
+     $(rm $BACKUP_DIR/$database.log)
+     if [[ "$backup_result" == *"backup complete"* ]];
+       then
+         echo "Backup for database $database is complete"
+       else
+         echo "Backup for database $database did not complete. Exiting."
+         exit
+     fi
    done
 else
    echo "File $FILE does not exist or is not writable. Doing a complete backup."
+   BACKUP_TMP_DIR=$(mktemp -d -p {{ influx_data_dir }})
+
+   for database in $DATABASES
+   do
+     $(influxd backup -database $database $BACKUP_TMP_DIR 2>&1 | tee $BACKUP_TMP_DIR/$database.log)
+     backup_result=$(tail -2 $BACKUP_TMP_DIR/$database.log)
+     echo $backup_result
+     $(rm $BACKUP_TMP_DIR/$database.log)
+     if [[ "$backup_result" == *"backup complete"* ]];
+       then
+         echo "Backup for database $database is complete"
+       else
+         echo "Backup for database $database did not complete. Deleting temp dir $BACKUP_TMP_DIR and exiting."
+         $(rm -rf $BACKUP_TMP_DIR)
+         exit
+     fi
+   done
+
    #Cleanup existing files in backup directory
    files_exists=$( ls $BACKUP_DIR/ | wc -l )
    if [ $files_exists != 0 ];
@@ -25,10 +53,12 @@ else
      eval $command
    fi
 
-   for database in $DATABASES
-   do
-     $(influxd backup -database $database $BACKUP_DIR)
-   done
+   echo "Copying backup data from temp dir $BACKUP_TMP_DIR to $BACKUP_DIR"
+   $(cp -rf $BACKUP_TMP_DIR/* $BACKUP_DIR/.)
+
+   echo "Backup successful. Deleting temporary backup dir: $BACKUP_TMP_DIR"
+   $(rm -rf $BACKUP_TMP_DIR)
+
 fi
 
 echo "Writing the new timestamp: $TIME_NOW to backup_timestamp file $FILE"
