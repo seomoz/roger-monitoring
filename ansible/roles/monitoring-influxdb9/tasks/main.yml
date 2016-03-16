@@ -124,20 +124,20 @@
 
 # Copy Influx backup script to influx hosts
 - name: Influx backup script to influx hosts
-  template: src=influxdb.backup.sh.j2  dest=/tmp/influxdb.backup.sh mode=0775
+  template: src=influxdb.backup.sh.j2  dest={{ influx_data_dir }}/scripts/influxdb.backup.sh mode=0775
   tags:
     - influx_backup
 
 # Running backup script as a cronjob on influx hosts
 - name: Running backup script as a cronjob on influx hosts
-  lineinfile: dest=/etc/crontab line="59 23  * * *   root    bash {{ influx_data_dir }}/scripts/influxdb.backup.sh > {{ influx_data_dir }}/backup_logs/influx_backup.log"
+  cron: name="Backup script" minute="59" hour="23" user="root" job="bash {{ influx_data_dir }}/scripts/influxdb.backup.sh > {{ influx_data_dir }}/backup_logs/influx_backup.log"
   sudo: yes
   tags:
     - influx_backup
 
 # Remove backup timestamp file on Wednesday of every week. This will trigger a complete backup on Wednesday every week at 11:59am
 - name: Remove backup timestamp file on Wednesday of every week
-  lineinfile: dest=/etc/crontab line="59 11  * * 3   root    rm {{ influx_data_dir }}/backup/last_backup_timestamp"
+  cron: name="Remove backup timestamp" minute="59" hour="11" weekday="4" user="root" job="rm {{ influx_data_dir }}/backup/last_backup_timestamp"
   sudo: yes
   tags:
     - influx_backup
