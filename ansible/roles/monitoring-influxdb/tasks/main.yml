@@ -15,14 +15,14 @@
 - name: Install influxdb
   apt: deb="{{ monitoring_tmp_dir }}/influxdb_{{ influxdb_version }}_amd64.deb"
   sudo: yes
-  notify: restart influxdb9
+  notify: restart influxdb
   tags:
     - monitoring
 
 - name: Configure influxdb
   template: src="influxdb.conf.j2" dest="/etc/influxdb/influxdb.conf"
   sudo: yes
-  notify: restart influxdb9
+  notify: restart influxdb
   tags:
    - monitoring
 
@@ -32,7 +32,7 @@
 # - name: Configure influxdb defaults
 #  template: src="influxdb.default.j2" dest="/etc/default/influxdb"
 #  sudo: yes
-#  notify: restart influxdb9
+#  notify: restart influxdb
 #  tags:
 #    - monitoring
 
@@ -45,7 +45,7 @@
 - name: Install upstart script for influxdb
   template: src=influxdb.conf.init.j2 dest=/etc/init/influxdb.conf
   sudo: yes
-  notify: restart influxdb9
+  notify: restart influxdb
   tags:
     - monitoring
 
@@ -61,7 +61,7 @@
     - "{{ influx_data_dir }}/plugin/collectd"
     - "{{ influx_data_dir }}/wal"
   sudo: yes
-  notify: restart influxdb9
+  notify: restart influxdb
   tags:
     - monitoring
 
@@ -69,7 +69,7 @@
 - name: Create merged types.db for collectd plugin
   template: src=merged_types.db.j2 dest="{{ influx_data_dir }}/plugin/collectd/types.db"
   sudo: yes
-  notify: restart influxdb9
+  notify: restart influxdb
   tags:
     - monitoring
 

@@ -1,7 +1,7 @@
 ---
-# Main task for setting up influxdb9 outside the cluster.
+# Main task for setting up influxdb outside the cluster.
 
-- hosts: influxdb9_servers
+- hosts: influxdb_servers
 
   vars_prompt:
     - name: "statsd_influxdb_user"
@@ -13,7 +13,7 @@
       private: yes
 
   roles:
-    - monitoring-influxdb9
+    - monitoring-influxdb
     - monitoring-statsd-fe-influxdb
 
 - hosts: statsd_repeater_servers
