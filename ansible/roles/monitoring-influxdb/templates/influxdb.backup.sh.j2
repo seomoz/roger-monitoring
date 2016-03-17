@@ -63,3 +63,6 @@ fi
 
 echo "Writing the new timestamp: $TIME_NOW to backup_timestamp file $FILE"
 echo "$TIME_NOW" > $FILE
+
+echo "Checking in with Snitch"
+$(curl https://nosnch.in/{{ influx_backup_snitch_keys[inventory_hostname] }})

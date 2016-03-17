@@ -5,6 +5,13 @@ influx_data_dir: "{{ base_monitoring_dir }}/influxdb"
 
 influxdb_version: "0.10.1-1"
 
+influx_backup_snitch_keys:
+     dalstgmesos01: "{{ influx91_backup_snitch_key }}"
+     dalstgmesos02: "{{ influx92_backup_snitch_key }}"
+     dalstgmesos03: "{{ influx93_backup_snitch_key }}"
+     dalstgmesos04: "{{ influx94_backup_snitch_key }}"
+     dalinfluxdb01: "{{ influx1_backup_snitch_key }}"
+
 collectd_types_dbs_contents:
     - "{{ lookup('file', 'types.db') }}"
     - "{{ lookup('file', '../../monitoring-agent/files/collectd-plugins/docker/dockerplugin.db') }}"
