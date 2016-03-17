@@ -1,4 +1,4 @@
-- name: restart influxdb9
+- name: restart influxdb
   service: name=influxdb state=restarted
   sudo: yes
   tags:
