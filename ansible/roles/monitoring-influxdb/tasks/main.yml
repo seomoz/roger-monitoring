@@ -126,7 +126,7 @@
 - name: Influx backup script to influx hosts
   template: src=influxdb.backup.sh.j2  dest={{ influx_data_dir }}/scripts/influxdb.backup.sh mode=0775
   tags:
-    - influx_backp
+    - influx_backup
 
 # Running backup script as a cronjob on influx hosts
 - name: Running backup script as a cronjob on influx hosts
