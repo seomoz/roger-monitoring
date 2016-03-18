@@ -10,7 +10,7 @@ influx_backup_snitch_keys:
      dalstgmesos02: "{{ influx92_backup_snitch_key }}"
      dalstgmesos03: "{{ influx93_backup_snitch_key }}"
      dalstgmesos04: "{{ influx94_backup_snitch_key }}"
-     dalinfluxdb01: "{{ influx1_backup_snitch_key }}"
+     dalinfluxdb1: "{{ influx1_backup_snitch_key }}"
 
 collectd_types_dbs_contents:
     - "{{ lookup('file', 'types.db') }}"
