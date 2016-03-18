@@ -125,6 +125,7 @@
 # Copy Influx backup script to influx hosts
 - name: Influx backup script to influx hosts
   template: src=influxdb.backup.sh.j2  dest={{ influx_data_dir }}/scripts/influxdb.backup.sh mode=0775
+  sudo: yes
   tags:
     - influx_backup
 
