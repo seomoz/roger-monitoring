@@ -5,6 +5,7 @@ BACKUP_DIR="{{ influx_data_dir }}/backup"
 FILE="$BACKUP_DIR/last_backup_timestamp"
 DATABASES="{{ databases_to_backup }}"
 
+echo "-------------------------------------"
 echo "Starting backup at $TIME_NOW."
 
 if [ -w "$FILE" ];
@@ -66,3 +67,5 @@ echo "$TIME_NOW" > $FILE
 
 echo "Checking in with Snitch"
 $(curl https://nosnch.in/{{ influx_backup_snitch_keys[inventory_hostname] }})
+
+echo "-------------------------------------"
