@@ -4,7 +4,7 @@
 # Sending logs to logstash
 - name: Update configuration to send syslogs to logstash
   template: src=logstash-emitter-forward-to-collector.conf.j2 dest="/etc/rsyslog.d/{{ logstash_dest_filename }}"
-  sudo: yes
+  become: yes
   when: disable_logstash is not defined or not disable_logstash
   notify: restart rsyslog
   tags:
@@ -14,7 +14,7 @@
 - name: Remove configuration to send syslogs to logstash
   file: name="/etc/rsyslog.d/{{ logstash_dest_filename }}" state=absent
   when: disable_logstash is defined and disable_logstash
-  sudo: yes
+  become: yes
   notify: restart rsyslog
   tags:
     - logstash
@@ -24,7 +24,7 @@
   with_flattened:
     - group_dirs_to_create
     - host_dirs_to_create
-  sudo: yes
+  become: yes
   tags:
     - configuration
 
@@ -33,32 +33,32 @@
   with_flattened:
     - collectd_log_dir
     - collectd_python_plugin_dir
-  sudo: yes
+  become: yes
   tags:
     - monitoring
 
 - name: Add collectd repository key to local keychain
   apt_key: url=http://pkg.ci.collectd.org/pubkey.asc state=present
-  sudo: yes
+  become: yes
   tags:
     - monitoring
 
 - name: Add collectd repository to apt sources list
   apt_repository: repo='deb http://pkg.ci.collectd.org/deb/ trusty collectd-5.5' state=present
-  sudo: yes
+  become: yes
   tags:
     - monitoring
 
 - name: Update package repo cache
   apt: update_cache=yes
-  sudo: yes
+  become: yes
   tags:
     - packages
     - update_cache
 
 - name: Install collectd
   apt: name=collectd force=yes install_recommends="{{ collectd_install_recommends }}" state=latest
-  sudo: yes
+  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -66,33 +66,33 @@
 # There's a dangling link that collectd 5.4 leaves behind, need to research more on this
 - name: unlink /etc/rc2.d/S95collectd
   file: path=/etc/rc2.d/S95collectd state=absent
-  sudo: yes
+  become: yes
   tags:
     - monitoring
 
 - name: Install collectd-core
   apt: name=collectd-core force=yes install_recommends="{{ collectd_install_recommends }}" state=latest
-  sudo: yes
+  become: yes
   notify: restart collectd
   tags:
     - monitoring
 
 - name: Configure collectd
   template: src=collectd.conf.j2 dest=/etc/collectd/collectd.conf
-  sudo: yes
+  become: yes
   notify: restart collectd
   tags:
     - monitoring
 
 - name: Remove collectd init.d script
   file: path=/etc/init.d/collectd state=absent
-  sudo: yes
+  become: yes
   tags:
     - monitoring
 
 - name: Install collectd upstart script
   template: src=collectd.conf.upstart.j2 dest=/etc/init/collectd.conf
-  sudo: yes
+  become: yes
   tags:
     - monitoring
 
@@ -101,7 +101,7 @@
 - name: Install zookeeper collectd by copying the python plugin
   copy: src=zk-collectd.py dest="{{ collectd_python_plugin_dir }}"
   when: is_in_masters is defined
-  sudo: yes
+  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -110,7 +110,7 @@
 - name: Copy the required python plugin mesos_master file
   when: is_in_masters is defined
   copy: src=mesos-master.py dest="{{ collectd_python_plugin_dir }}"
-  sudo: yes
+  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -119,7 +119,7 @@
 - name: Copy the required python plugin mesos_slave file
   when: is_in_slaves is defined
   copy: src=mesos-slave.py dest="{{ collectd_python_plugin_dir }}"
-  sudo: yes
+  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -129,7 +129,7 @@
 - name: Copy the required python plugin bamboo status plugin file
   when: is_in_bamboo_servers is defined
   copy: src=bamboo_status.py dest="{{ collectd_python_plugin_dir }}"
-  sudo: yes
+  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -139,7 +139,7 @@
 - name: Copy the required python plugin bamboo config hash plugin file
   when: is_in_bamboo_servers is defined
   copy: src=bamboo_confighash.py dest="{{ collectd_python_plugin_dir }}"
-  sudo: yes
+  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -149,7 +149,7 @@
 - name: Copy the required python plugin HAProxy
   when: is_in_haproxy is defined
   copy: src=collectd-plugins/collectd-haproxy/haproxy.py dest="{{ collectd_python_plugin_dir }}"
-  sudo: yes
+  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -173,7 +173,7 @@
 - name: Install python python-setuptools
   apt: name=python-setuptools state=present
   when: not which_docker.failed
-  sudo: yes
+  become: yes
   tags:
     - monitoring
     - packages
@@ -183,7 +183,7 @@
 - name: Install pip
   easy_install: name=pip
   when: not which_docker.failed
-  sudo: yes
+  become: yes
   tags:
     - monitoring
     - packages
@@ -192,7 +192,7 @@
 - name: Install docker collectd dependency - 1
   pip: name=python-dateutil version=2.4.2
   when: not which_docker.failed
-  sudo: yes
+  become: yes
   tags:
     - monitoring
     - monitor-docker
@@ -200,7 +200,7 @@
 - name: Install docker collectd dependency - 2
   pip: name=docker-py version=1.6.0
   when: not which_docker.failed
-  sudo: yes
+  become: yes
   tags:
     - monitoring
     - monitor-docker
@@ -208,7 +208,7 @@
 - name: Install docker collectd by copying the python plugin
   copy: src=collectd-plugins/docker/dockerplugin.py dest="{{ collectd_python_plugin_dir }}"
   when: not which_docker.failed
-  sudo: yes
+  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -217,7 +217,7 @@
 - name: Copy docker collectd TypesDb
   copy: src=collectd-plugins/docker/dockerplugin.db dest="{{ collectd_python_plugin_dir }}"
   when: not which_docker.failed
-  sudo: yes
+  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -226,7 +226,7 @@
 #This is temporary fix,until we find a different way to collect docker metrics
 - lineinfile: dest=/etc/crontab line="*/10 *  * * *   root    service collectd restart"
   when: not which_docker.failed
-  sudo: yes
+  become: yes
   tags:
     - monitor-docker
 
@@ -234,7 +234,7 @@
 - name: Install marathon collectd by copying the python plugin
   copy: src=collectd-plugins/marathon/marathon.py dest="{{ collectd_python_plugin_dir }}"
   when: is_in_marathon_servers is defined
-  sudo: yes
+  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -243,7 +243,7 @@
 - name: Install chronos collectd by copying the python plugin
   copy: src=collectd-plugins/chronos/chronos.py dest="{{ collectd_python_plugin_dir }}"
   when: is_in_masters is defined
-  sudo: yes
+  become: yes
   notify: restart collectd
   tags:
     - monitoring

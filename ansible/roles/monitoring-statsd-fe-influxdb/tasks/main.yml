@@ -2,7 +2,7 @@
   file: path={{ item }} state=directory owner=root
   with_items:
     - "{{ monitoring_tmp_dir }}"
-  sudo: yes
+  become: yes
   tags:
     - monitoring
     - statsd
@@ -10,7 +10,7 @@
 
 - name: Download telegraf package
   get_url: url="{{ telegraf_download_url_path_prefix }}/telegraf_{{ telegraf_version }}_amd64.deb" dest="{{ monitoring_tmp_dir }}"
-  sudo: yes
+  become: yes
   tags:
     - monitoring
     - statsd
@@ -18,7 +18,7 @@
 
 - name: Install telegraf
   apt: deb="{{ monitoring_tmp_dir }}/telegraf_{{ telegraf_version }}_amd64.deb"
-  sudo: yes
+  become: yes
   notify: restart telegraf
   tags:
     - monitoring
@@ -30,7 +30,7 @@
   with_items:
     - "/var/run/telegraf"
     - "/etc/telegraf"
-  sudo: yes
+  become: yes
   notify: restart telegraf
   tags:
     - monitoring
@@ -39,7 +39,7 @@
 
 - name: Configure telegraf
   template: src="telegraf.conf.j2" dest="/etc/telegraf/telegraf.conf"
-  sudo: yes
+  become: yes
   notify: restart telegraf
   tags:
    - monitoring
@@ -48,7 +48,7 @@
 
 - name: Remove init.d script for telgraf
   file: path=/etc/init.d/telegraf state=absent
-  sudo: yes
+  become: yes
   tags:
     - monitoring
     - statsd
@@ -56,7 +56,7 @@
 
 - name: Install upstart script for telegraf
   template: src=telegraf.conf.upstart.j2 dest=/etc/init/telegraf.conf
-  sudo: yes
+  become: yes
   notify: restart telegraf
   tags:
     - monitoring
