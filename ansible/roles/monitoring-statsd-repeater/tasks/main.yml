@@ -1,6 +1,6 @@
 - name: Stop statsd-repeater (if needed)
   command: "docker stop statsd-repeater"
-  sudo: yes
+  become: yes
   ignore_errors: yes
   tags:
     - monitoring
@@ -9,7 +9,7 @@
 
 - name: Remove statsd-repeater (if there)
   command: "docker rm statsd-repeater"
-  sudo: yes
+  become: yes
   ignore_errors: yes
   tags:
     - monitoring
@@ -18,7 +18,7 @@
 
 - name: Run statsd repeater
   command: "docker run --name=statsd-repeater -p 8125:8125/udp -p 8126:8126 -d --restart=always {{ docker_registry }}/moz-statsd:v0.26"
-  sudo: yes
+  become: yes
   tags:
     - monitoring
     - statsd

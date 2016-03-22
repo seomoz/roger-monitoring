@@ -1,19 +1,19 @@
 - name: Stop grafana (if needed)
   command: "docker stop grafana"
-  sudo: yes
+  become: yes
   ignore_errors: yes
   tags:
     - grafana
 
 - name: Remove grafana (if there)
   command: "docker rm grafana"
-  sudo: yes
+  become: yes
   ignore_errors: yes
   tags:
     - grafana
 
 - name: Run grafana
   command: "docker run --name=grafana -p 3000:2048 -d --restart=always -e GF_SERVER_HTTP_PORT=2048 -e GF_DATABASE_TYPE={{ gf_database_type }} -e GF_DATABASE_HOST={{ gf_database_host }} -e GF_DATABASE_NAME=grafana26 -e GF_DATABASE_USER={{ gf_username }} -e GF_DATABASE_PASSWORD={{ gf_passwd }} -e GF_AUTH_GOOGLE_ENABLED=true -e GF_AUTH_GOOGLE_CLIENT_ID={{ gf_client_id }} -e GF_AUTH_GOOGLE_CLIENT_SECRET={{ gf_client_secret }} -e GF_AUTH_GOOGLE_SCOPES=\"https://{{ gf_scopes_profile }} https://{{ gf_scopes_email }}\" -e GF_AUTH_GOOGLE_AUTH_URL=\"https://{{ gf_auth_url }}\" -e GF_AUTH_GOOGLE_TOKEN_URL=\"https://{{ gf_token_url }}\" -e GF_AUTH_GOOGLE_ALLOW_SIGN_UP=true -e GF_AUTH_GOOGLE_ALLOWED_DOMAINS={{ gf_allowed_domains }} -e GF_SERVER_ROOT_URL=\"http://{{ gf_server }}:3000\" grafana/grafana:2.6.0"
-  sudo: yes
+  become: yes
   tags:
     - grafana
