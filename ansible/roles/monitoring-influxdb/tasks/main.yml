@@ -136,8 +136,16 @@
   tags:
     - influx_backup
 
-# Remove backup timestamp file on Wednesday of every week. This will trigger a complete backup on Wednesday every week at 11:59am
-- name: Remove backup timestamp file on Wednesday of every week
+# Since the complete backup job takes longer, we schedule to run earlier than 23:59 hrs on Thursday,
+# else snitch triggers an alert. The remove timestamp file cron job that runs before this job will trigger a complete backup.
+- name: Running complete backup script as a cronjob on influx hosts
+  cron: name="Complete Backup job" minute="59" hour="20" weekday="4" user="root" job="bash -c '{{ influx_data_dir }}/scripts/influxdb.backup.sh >> {{ influx_data_dir }}/backup_logs/influx_backup_$(date +\"\\%Y\\%m\").log'"
+  become: yes
+  tags:
+    - influx_backup
+
+# Remove backup timestamp file on Thursday of every week. This will trigger a complete backup on Thursday every week at 11:59am
+- name: Remove backup timestamp file on Thursday of every week
   cron: name="Remove backup timestamp" minute="59" hour="11" weekday="4" user="root" job="rm {{ influx_data_dir }}/backup/last_backup_timestamp"
   become: yes
   tags:
