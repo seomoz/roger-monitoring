@@ -84,11 +84,11 @@
   # Address and port to host UDP listener on
   service_address = ":{{ statsd_service_port }}"
   # Delete gauges every interval (default=false)
-  delete_gauges = false
+  delete_gauges = true
   # Delete counters every interval (default=false)
-  delete_counters = false
+  delete_counters = true
   # Delete sets every interval (default=false)
-  delete_sets = false
+  delete_sets = true
   # Delete timings & histograms every interval (default=true)
   delete_timings = true
   # Percentiles to calculate for timing & histogram stats
