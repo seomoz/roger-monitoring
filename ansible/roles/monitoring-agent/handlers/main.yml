@@ -1,13 +1,11 @@
-#Collectd restart did not seemed to work, this seemed to be more authentic way to restart a service
 - name: restart collectd
-  command:  "service collectd restart"
+  service: name=collectd state=restarted
   become: yes
   tags:
     - monitoring
 
-# Note: Had to switch to command module as using the service module to restart rsyslog is failing (unclear why, even -vvvv didn't provide any helpful info).
 - name: restart rsyslog
-  command: "service rsyslog restart"
+  service: name=rsyslog state=restarted
   become: yes
   tags:
    - rsyslog

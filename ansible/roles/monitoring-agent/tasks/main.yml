@@ -22,8 +22,8 @@
 - name: Create directories which need to exist, if necessary
   file: path={{ item }} state=directory owner=root
   with_flattened:
-    - group_dirs_to_create
-    - host_dirs_to_create
+    - "{{ group_dirs_to_create | default([]) }}"
+    - "{{ host_dirs_to_create | default([]) }}"
   become: yes
   tags:
     - configuration
@@ -31,8 +31,8 @@
 - name: Create collectd related directories, if necessary
   file: path={{ item }} state=directory owner=root
   with_flattened:
-    - collectd_log_dir
-    - collectd_python_plugin_dir
+    - "{{ collectd_log_dir }}"
+    - "{{ collectd_python_plugin_dir }}"
   become: yes
   tags:
     - monitoring
