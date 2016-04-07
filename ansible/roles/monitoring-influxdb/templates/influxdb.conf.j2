@@ -280,7 +280,7 @@ reporting-disabled = false
 [collectd]
   enabled = true
   bind-address = ":8096"
-  database = "metrics_db"
+  database = "collectd_db"
   typesdb = "{{ influx_data_dir }}/plugin/collectd/types.db"
 
   # These next lines control how batching works. You should have this enabled
