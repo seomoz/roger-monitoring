@@ -120,11 +120,22 @@ Import "mesos-slave"
     sleep_interval  10
   </Module>
 </Plugin>
-
 {% endif %}
-#bamboo python plugin to check the status
+
+{% if is_in_bind_servers is defined %}
+<Plugin "bind">
+  URL "http://127.0.0.1:8053/"
+  OpCodes         true
+  QTypes          true
+  ServerStats     true
+  ZoneMaintStats  true
+  ResolverStats   false
+  MemoryStats     true
+</Plugin>
+{% endif %}
 
 {% if is_in_bamboo_servers is defined %}
+#bamboo python plugin to check the status
 <Plugin python>
   ModulePath "{{ collectd_python_plugin_dir }}"
   Import "bamboo_status"
@@ -136,10 +147,8 @@ Import "mesos-slave"
 </Plugin>
 {% endif %}
 
-
-#bamboo python plugin to send the confighash
-
 {% if is_in_bamboo_servers is defined %}
+#bamboo python plugin to send the confighash
 <Plugin python>
   ModulePath "{{ collectd_python_plugin_dir }}"
   Import "bamboo_confighash"
@@ -151,8 +160,8 @@ Import "mesos-slave"
 </Plugin>
 {% endif %}
 
-# Enable HAProxy plugin
 {% if is_in_haproxy is defined %}
+# Enable HAProxy plugin
 <Plugin python>
     ModulePath "{{ collectd_python_plugin_dir }}"
 
