@@ -12,5 +12,5 @@
 
 {% endfor %}
 
-influx -database collectd_db -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "CREATE CONTINUOUS QUERY downsample_1month on collectd_db begin SELECT last(value) as last, mean(value) as value into  _1month.:MEASUREMENT from  /.*/ group by time(1m), * END"
-influx -database collectd_db -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "CREATE CONTINUOUS QUERY downsample_3month on collectd_db begin SELECT last(last)  as last, mean(value)  as value into _3month.:MEASUREMENT from  _1month./.*/ group by time(10m), * END"
+influx -database {{ collectd_db }} -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "CREATE CONTINUOUS QUERY downsample_1month on {{ collectd_db }} begin SELECT last(value) as last, mean(value) as value into  _1month.:MEASUREMENT from  /.*/ group by time(1m), * END"
+influx -database {{ collectd_db }} -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "CREATE CONTINUOUS QUERY downsample_3month on {{ collectd_db }} begin SELECT last(last)  as last, mean(value)  as value into _3month.:MEASUREMENT from  _1month./.*/ group by time(10m), * END"
