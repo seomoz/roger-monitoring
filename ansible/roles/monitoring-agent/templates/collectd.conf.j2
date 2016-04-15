@@ -32,14 +32,7 @@ LoadPlugin {{ plugin }}
 
 # Get free space for several important mountpoints.
 <Plugin "df">
-  MountPoint "/"
-  MountPoint "/data"
-  MountPoint "/data/mesos"
-  MountPoint "/data/monitoring"
-  MountPoint "/data/san-mount"
-  MountPoint "/data/san-mount-prod"
-  MountPoint "/data/san-mount-staging"
-  MountPoint "/home"
+  IgnoreSelected true
   ValuesPercentage true
 </Plugin>
 
