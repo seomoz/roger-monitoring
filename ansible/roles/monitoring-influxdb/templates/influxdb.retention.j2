@@ -7,10 +7,9 @@
   influx -database "{{ database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "create retention policy _1m on {{ database }} duration  30d replication 1"
   influx -database "{{ database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "create retention policy _10m on {{ database }} duration  90d replication 1"
 
-  influx -database "{{ database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "drop continuous query downsample_1m on {{ database }}"
-  influx -database "{{ database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "drop continuous query downsample_10m on {{ database }}"
-
 {% endfor %}
 
-influx -database {{ collectd_db }} -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "CREATE CONTINUOUS QUERY downsample_1m on {{ collectd_db }} begin SELECT last(value) as last, sum(value) as sum, mean(value) as value into  _1m.:MEASUREMENT from  /.*/ group by time(1m), * END"
-influx -database {{ collectd_db }} -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "CREATE CONTINUOUS QUERY downsample_10m on {{ collectd_db }} begin SELECT last(last)  as last, sum(sum) as sum, mean(value)  as value into _10m.:MEASUREMENT from  _1m./.*/ group by time(10m), * END"
+influx -database {{ collectd_db }} -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "drop continuous query downsample_{{ collectd_db }}_1m on {{ collectd_db }}"
+influx -database {{ collectd_db }} -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "drop continuous query downsample_{{ collectd_db }}_10m on {{ collectd_db }}"
+influx -database {{ collectd_db }} -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "CREATE CONTINUOUS QUERY downsample_{{ collectd_db }}_1m on {{ collectd_db }} begin SELECT last(value) as last, sum(value) as sum, mean(value) as value into  _1m.:MEASUREMENT from  /.*/ group by time(1m), * END"
+influx -database {{ collectd_db }} -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "CREATE CONTINUOUS QUERY downsample_{{ collectd_db }}_10m on {{ collectd_db }} begin SELECT last(last)  as last, sum(sum) as sum, mean(value)  as value into _10m.:MEASUREMENT from  _1m./.*/ group by time(10m), * END"
