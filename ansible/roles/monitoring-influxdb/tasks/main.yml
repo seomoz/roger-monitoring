@@ -101,6 +101,7 @@
 # Applying retention policies and continuous queries on influx database
 - name: Applying retention policies and continuous queries on influx database
   command: "{{ item }}"
+  notify: restart influxdb
   with_items:
     - sh /tmp/influxdb.retention.sh
     - rm /tmp/influxdb.retention.sh
