@@ -95,7 +95,7 @@
 # Copy Retention policies and Continuous queries script to influx host
 - name: Copying retention policies and continuous queries on influx host
   template: src=influxdb.retention.j2 dest=/tmp/influxdb.retention.sh  
-  when: downsample_data
+  when: reapply_retentions_and_cqs
   tags:
     - retention_policy
 
@@ -105,7 +105,7 @@
   with_items:
     - sh /tmp/influxdb.retention.sh
     - rm /tmp/influxdb.retention.sh
-  when: downsample_data
+  when: reapply_retentions_and_cqs
   tags:
     - retention_policy
 

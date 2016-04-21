@@ -5,7 +5,8 @@ influx_data_dir: "{{ base_monitoring_dir }}/influxdb"
 
 influxdb_version: "0.10.1-1"
 
-downsample_data: false
+# Needed for first install. Subsequently setting this to true will drop existing downsampled data (if any.)
+reapply_retentions_and_cqs: false
 
 influx_backup_snitch_keys:
      dalstgmesos01: "{{ influx91_backup_snitch_key }}"
