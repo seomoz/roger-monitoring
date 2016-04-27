@@ -131,16 +131,9 @@
   tags:
     - influx_backup
 
-# Running first daily backup as a cronjob on influx hosts
+# Running daily backup script as a cronjob on influx hosts
 - name: Running backup script as a cronjob on influx hosts
-  cron: name="Backup script" minute="59" hour="14" user="root" job="bash -c '{{ influx_data_dir }}/scripts/influxdb.backup.sh >> {{ influx_data_dir }}/backup_logs/influx_backup_$(date +\"\\%Y\\%m\").log'"
-  become: yes
-  tags:
-    - influx_backup
-
-# Running second daily backup as a cronjob on influx hosts
-- name: Running backup script as a cronjob on influx hosts
-  cron: name="Backup script" minute="59" hour="23" user="root" job="bash -c '{{ influx_data_dir }}/scripts/influxdb.backup.sh >> {{ influx_data_dir }}/backup_logs/influx_backup_$(date +\"\\%Y\\%m\").log'"
+  cron: name="Backup script" minute="59" hour="14,23" user="root" job="bash -c '{{ influx_data_dir }}/scripts/influxdb.backup.sh >> {{ influx_data_dir }}/backup_logs/influx_backup_$(date +\"\\%Y\\%m\").log'"
   become: yes
   tags:
     - influx_backup
