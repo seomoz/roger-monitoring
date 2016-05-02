@@ -19,15 +19,6 @@
   tags:
     - logstash
 
-- name: Send marathon logs via syslog
-  template: src="90-marathon.conf.j2" dest="/etc/rsyslog.d/{{ marathon_syslog_conf_filename }}"
-  become: yes
-  when: is_in_marathon_servers is defined and marathon_syslog_conf_filename is defined
-  notify: restart rsyslog
-  tags:
-    - marathon
-    - logstash
-
 - name: Create directories which need to exist, if necessary
   file: path={{ item }} state=directory owner=root
   with_flattened:
