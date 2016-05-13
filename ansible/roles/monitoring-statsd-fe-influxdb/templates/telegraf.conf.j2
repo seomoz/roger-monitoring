@@ -52,12 +52,12 @@
 [outputs]
 
 # Configuration for influxdb server to send metrics to
-[outputs.influxdb]
+[[outputs.influxdb]]
   # The full HTTP endpoint URL for your InfluxDB instance
   # Multiple urls can be specified for InfluxDB cluster support.
   urls = [ "http://{{ inventory_hostname }}:8086" ] # required
   # The target database for metrics (telegraf will create it if not exists)
-  database = "{{ target_db }}" # required
+  database = "{{ metrics_db }}" # required
   # Precision of writes, valid values are n, u, ms, s, m, and h
   # note: using second precision greatly helps InfluxDB compression
   precision = "s"
@@ -69,6 +69,137 @@
   password = "{{ statsd_influxdb_passwd }}"
   # Set the user agent for the POSTs (can be useful for log differentiation)
   # user_agent = "telegraf"
+
+  [outputs.influxdb.tagdrop]
+    app = ["mozlocal*", "wonk", "joe-fox", "pdfit", "tilex", "kairos", "seomoz", "leeloo", "longboard", "inbound"]
+
+[[outputs.influxdb]]
+  # The full HTTP endpoint URL for your InfluxDB instance
+  # Multiple urls can be specified for InfluxDB cluster support.
+  urls = [ "http://{{ inventory_hostname }}:8086" ] # required
+  # The target database for metrics (telegraf will create it if not exists)
+  database = "{{ local_db }}" # required
+  # Precision of writes, valid values are n, u, ms, s, m, and h
+  # note: using second precision greatly helps InfluxDB compression
+  precision = "s"
+
+  # Connection timeout (for the connection with InfluxDB), formatted as a string.
+  # If not provided, will default to 0 (no timeout)
+  timeout = "5s"
+  username = "{{ statsd_influxdb_user }}"
+  password = "{{ statsd_influxdb_passwd }}"
+  # Set the user agent for the POSTs (can be useful for log differentiation)
+  # user_agent = "telegraf"
+
+  [outputs.influxdb.tagpass]
+    app = ["mozlocal*"]
+
+[[outputs.influxdb]]
+  # The full HTTP endpoint URL for your InfluxDB instance
+  # Multiple urls can be specified for InfluxDB cluster support.
+  urls = [ "http://{{ inventory_hostname }}:8086" ] # required
+  # The target database for metrics (telegraf will create it if not exists)
+  database = "{{ wonk_db }}" # required
+  # Precision of writes, valid values are n, u, ms, s, m, and h
+  # note: using second precision greatly helps InfluxDB compression
+  precision = "s"
+
+  # Connection timeout (for the connection with InfluxDB), formatted as a string.
+  # If not provided, will default to 0 (no timeout)
+  timeout = "5s"
+  username = "{{ statsd_influxdb_user }}"
+  password = "{{ statsd_influxdb_passwd }}"
+  # Set the user agent for the POSTs (can be useful for log differentiation)
+  # user_agent = "telegraf"
+
+  [outputs.influxdb.tagpass]
+    app = ["wonk"]
+
+
+[[outputs.influxdb]]
+  # The full HTTP endpoint URL for your InfluxDB instance
+  # Multiple urls can be specified for InfluxDB cluster support.
+  urls = [ "http://{{ inventory_hostname }}:8086" ] # required
+  # The target database for metrics (telegraf will create it if not exists)
+  database = "{{ billing_db }}" # required
+  # Precision of writes, valid values are n, u, ms, s, m, and h
+  # note: using second precision greatly helps InfluxDB compression
+  precision = "s"
+
+  # Connection timeout (for the connection with InfluxDB), formatted as a string.
+  # If not provided, will default to 0 (no timeout)
+  timeout = "5s"
+  username = "{{ statsd_influxdb_user }}"
+  password = "{{ statsd_influxdb_passwd }}"
+  # Set the user agent for the POSTs (can be useful for log differentiation)
+  # user_agent = "telegraf"
+
+  [outputs.influxdb.tagpass]
+    app = ["longboard"]
+
+[[outputs.influxdb]]
+  # The full HTTP endpoint URL for your InfluxDB instance
+  # Multiple urls can be specified for InfluxDB cluster support.
+  urls = [ "http://{{ inventory_hostname }}:8086" ] # required
+  # The target database for metrics (telegraf will create it if not exists)
+  database = "{{ analytics_db }}" # required
+  # Precision of writes, valid values are n, u, ms, s, m, and h
+  # note: using second precision greatly helps InfluxDB compression
+  precision = "s"
+
+  # Connection timeout (for the connection with InfluxDB), formatted as a string.
+  # If not provided, will default to 0 (no timeout)
+  timeout = "5s"
+  username = "{{ statsd_influxdb_user }}"
+  password = "{{ statsd_influxdb_passwd }}"
+  # Set the user agent for the POSTs (can be useful for log differentiation)
+  # user_agent = "telegraf"
+
+  [outputs.influxdb.tagpass]
+    app = ["joe-fox", "pdfit", "tilex"]
+
+
+[[outputs.influxdb]]
+  # The full HTTP endpoint URL for your InfluxDB instance
+  # Multiple urls can be specified for InfluxDB cluster support.
+  urls = [ "http://{{ inventory_hostname }}:8086" ] # required
+  # The target database for metrics (telegraf will create it if not exists)
+  database = "{{ inbound_db }}" # required
+  # Precision of writes, valid values are n, u, ms, s, m, and h
+  # note: using second precision greatly helps InfluxDB compression
+  precision = "s"
+
+  # Connection timeout (for the connection with InfluxDB), formatted as a string.
+  # If not provided, will default to 0 (no timeout)
+  timeout = "5s"
+  username = "{{ statsd_influxdb_user }}"
+  password = "{{ statsd_influxdb_passwd }}"
+  # Set the user agent for the POSTs (can be useful for log differentiation)
+  # user_agent = "telegraf"
+
+  [outputs.influxdb.tagpass]
+    app = ["leeloo", "seomoz", "inbound"]
+
+[[outputs.influxdb]]
+  # The full HTTP endpoint URL for your InfluxDB instance
+  # Multiple urls can be specified for InfluxDB cluster support.
+  urls = [ "http://{{ inventory_hostname }}:8086" ] # required
+  # The target database for metrics (telegraf will create it if not exists)
+  database = "{{ content_db }}" # required
+  # Precision of writes, valid values are n, u, ms, s, m, and h
+  # note: using second precision greatly helps InfluxDB compression
+  precision = "s"
+
+  # Connection timeout (for the connection with InfluxDB), formatted as a string.
+  # If not provided, will default to 0 (no timeout)
+  timeout = "5s"
+  username = "{{ statsd_influxdb_user }}"
+  password = "{{ statsd_influxdb_passwd }}"
+  # Set the user agent for the POSTs (can be useful for log differentiation)
+  # user_agent = "telegraf"
+
+  [outputs.influxdb.tagpass]
+    app = ["kairos"]
 
 ###############################################################################
 #                                  PLUGINS                                    #
@@ -82,7 +213,7 @@
 # Statsd Server
 [[inputs.statsd]]
   # Address and port to host UDP listener on
-  service_address = ":{{ statsd_service_port }}"
+  service_address = ":9125"
   # Delete gauges every interval (default=false)
   delete_gauges = true
   # Delete counters every interval (default=false)
@@ -115,6 +246,15 @@
       "nsq.*.topic.* app.host.measurement.topic_name.measurement*",
       "nsq.* app.host.measurement*",
       "kairos.* app.env.measurement*",
+      "mozlocal*.* app.measurement* local_db",
+      "wonk.* app.measurement* wonk_db",
+      "leeloo.* app.measurement* inbound_db",
+      "seomoz.* app.measurement* inbound_db",
+      "inbound.* app.measurement* inbound_db",
+      "joe-fox.* app.measurement* analytics_db",
+      "pdfit.* app.measurement* analytics_db",
+      "tilex.* app.measurement* analytics_db",
+      "longbound.* app.measurement* billing_db",
       "app.measurement*"
   ]
 

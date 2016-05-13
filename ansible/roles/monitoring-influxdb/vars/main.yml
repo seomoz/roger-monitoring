@@ -7,6 +7,8 @@ influxdb_version: "0.10.1-1"
 
 # Needed for first install. Subsequently setting this to true will drop existing downsampled data (if any.)
 reapply_retentions_and_cqs: false
+# Create users, dbs and grant permissions after wall flushing is done
+crete_db_users_grant_permissions: false
 
 influx_backup_snitch_keys:
      dalstgmesos01: "{{ influx91_backup_snitch_key }}"
