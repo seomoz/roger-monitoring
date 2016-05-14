@@ -112,7 +112,7 @@
 # Copy Influx users script to influx hosts
 - name: Influx users script to influx hosts
   template: src=influxdb.users.sh.j2  dest=/tmp/influxdb.users.sh
-  when: crete_db_users_grant_permissions
+  when: create_db_users_grant_permissions
   tags:
     - influx_users
 
@@ -122,7 +122,7 @@
   with_items:
     - sh /tmp/influxdb.users.sh
     - rm /tmp/influxdb.users.sh
-  when: crete_db_users_grant_permissions
+  when: create_db_users_grant_permissions
   tags:
     - influx_users
 

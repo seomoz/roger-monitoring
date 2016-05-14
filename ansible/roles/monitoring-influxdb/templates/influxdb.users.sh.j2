@@ -1,19 +1,8 @@
 influx -database "metrics_db" -execute "create user {{ influx_admin_user }} with password '{{ influx_admin_password }}' with all privileges"
-
 influx -database "metrics_db" -username {{ influx_admin_user }} -password {{ influx_admin_password }} -execute "create user {{ alertd_influx_user }} with password '{{ alertd_influx_pass }}'"
-influx -database "metrics_db" -username {{ influx_admin_user }} -password {{ influx_admin_password }} -execute "grant read on metrics_db to {{ alertd_influx_user }}"
 influx -database "collectd_db" -username {{ influx_admin_user }} -password {{ influx_admin_password }} -execute "grant read on collectd_db to {{ alertd_influx_user }}"
-influx -database "content_db" -username {{ influx_admin_user }} -password {{ influx_admin_password }} -execute "grant read on content_db to {{ alertd_influx_user }}"
-influx -database "inbound_db" -username {{ influx_admin_user }} -password {{ influx_admin_password }} -execute "grant read on inbound_db to {{ alertd_influx_user }}"
-influx -database "analytics_db" -username {{ influx_admin_user }} -password {{ influx_admin_password }} -execute "grant read on analytics_db to {{ alertd_influx_user }}"
-influx -database "billing_db" -username {{ influx_admin_user }} -password {{ influx_admin_password }} -execute "grant read on billing_db to {{ alertd_influx_user }}"
-influx -database "wonk_db" -username {{ influx_admin_user }} -password {{ influx_admin_password }} -execute "grant read on wonk_db to {{ alertd_influx_user }}"
-influx -database "local_db" -username {{ influx_admin_user }} -password {{ influx_admin_password }} -execute "grant read on local_db to {{ alertd_influx_user }}"
 influx -database "metrics_db" -username {{ influx_admin_user }} -password {{ influx_admin_password }} -execute "create user {{ statsd_influxdb_user }} with password '{{ statsd_influxdb_passwd }}'"
-influx -database "metrics_db" -username {{ influx_admin_user }} -password {{ influx_admin_password }} -execute "grant all on metrics_db to {{ statsd_influxdb_user }}"
-influx -database "content_db" -username {{ influx_admin_user }} -password {{ influx_admin_password }} -execute "grant all on content_db to {{ statsd_influxdb_user }}"
-influx -database "inbound_db" -username {{ influx_admin_user }} -password {{ influx_admin_password }} -execute "grant all on inbound_db to {{ statsd_influxdb_user }}"
-influx -database "analytics_db" -username {{ influx_admin_user }} -password {{ influx_admin_password }} -execute "grant all on analytics_db to {{ statsd_influxdb_user }}"
-influx -database "billing_db" -username {{ influx_admin_user }} -password {{ influx_admin_password }} -execute "grant all on billing_db to {{ statsd_influxdb_user }}"
-influx -database "wonk_db" -username {{ influx_admin_user }} -password {{ influx_admin_password }} -execute "grant all on wonk_db to {{ statsd_influxdb_user }}"
-influx -database "local_db" -username {{ influx_admin_user }} -password {{ influx_admin_password }} -execute "grant all on local_db to {{ statsd_influxdb_user }}"
+{% for db in influx_databases %}
+influx -database "{{ db }}" -username {{ influx_admin_user }} -password {{ influx_admin_password }} -execute "grant read on {{ db }} to {{ alertd_influx_user }}"
+influx -database "{{ db }}" -username {{ influx_admin_user }} -password {{ influx_admin_password }} -execute "grant all on {{ db }} to {{ statsd_influxdb_user }}"
+{% endfor %}

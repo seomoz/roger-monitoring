@@ -71,7 +71,7 @@
   # user_agent = "telegraf"
 
   [outputs.influxdb.tagdrop]
-    app = ["mozlocal*", "wonk", "joe-fox", "pdfit", "tilex", "kairos", "seomoz", "leeloo", "longboard", "inbound"]
+    app = [{% for item in local_apps %}"{{ item }}",{% endfor %} {% for item in wonk_apps %}"{{ item }}",{% endfor %} {% for item in analytics_apps %}"{{ item }}",{% endfor %} {% for item in content_apps %}"{{ item }}",{% endfor %} {% for item in billing_apps %}"{{ item }}",{% endfor %} {% for item in inbound_apps %}"{{ item }}"{% if not loop.last %},{% endif %} {% endfor %}]
 
 [[outputs.influxdb]]
   # The full HTTP endpoint URL for your InfluxDB instance
@@ -92,7 +92,7 @@
   # user_agent = "telegraf"
 
   [outputs.influxdb.tagpass]
-    app = ["mozlocal*"]
+    app = [{% for item in local_apps %}"{{ item }}"{% if not loop.last %},{% endif %} {% endfor %}]
 
 [[outputs.influxdb]]
   # The full HTTP endpoint URL for your InfluxDB instance
@@ -113,7 +113,7 @@
   # user_agent = "telegraf"
 
   [outputs.influxdb.tagpass]
-    app = ["wonk"]
+    app = [{% for item in wonk_apps %}"{{ item }}"{% if not loop.last %},{% endif %} {% endfor %}]
 
 
 [[outputs.influxdb]]
@@ -135,7 +135,7 @@
   # user_agent = "telegraf"
 
   [outputs.influxdb.tagpass]
-    app = ["longboard"]
+    app = [{% for item in billing_apps %}"{{ item }}"{% if not loop.last %},{% endif %} {% endfor %}]
 
 [[outputs.influxdb]]
   # The full HTTP endpoint URL for your InfluxDB instance
@@ -156,7 +156,7 @@
   # user_agent = "telegraf"
 
   [outputs.influxdb.tagpass]
-    app = ["joe-fox", "pdfit", "tilex"]
+    app = [{% for item in analytics_apps %}"{{ item }}"{% if not loop.last %},{% endif %} {% endfor %}]
 
 
 [[outputs.influxdb]]
@@ -178,7 +178,7 @@
   # user_agent = "telegraf"
 
   [outputs.influxdb.tagpass]
-    app = ["leeloo", "seomoz", "inbound"]
+    app = [{% for item in inbound_apps %}"{{ item }}"{% if not loop.last %},{% endif %} {% endfor %}]
 
 [[outputs.influxdb]]
   # The full HTTP endpoint URL for your InfluxDB instance
@@ -199,7 +199,7 @@
   # user_agent = "telegraf"
 
   [outputs.influxdb.tagpass]
-    app = ["kairos"]
+    app = [{% for item in content_apps %}"{{ item }}"{% if not loop.last %},{% endif %} {% endfor %}]
 
 ###############################################################################
 #                                  PLUGINS                                    #
@@ -213,7 +213,7 @@
 # Statsd Server
 [[inputs.statsd]]
   # Address and port to host UDP listener on
-  service_address = ":9125"
+  service_address = ":{{ statsd_service_port }}"
   # Delete gauges every interval (default=false)
   delete_gauges = true
   # Delete counters every interval (default=false)
@@ -245,16 +245,24 @@
       "nsq.*.topic.*.channel.* app.host.measurement.topic_name.measurement.channel_name.measurement*",
       "nsq.*.topic.* app.host.measurement.topic_name.measurement*",
       "nsq.* app.host.measurement*",
-      "kairos.* app.env.measurement*",
-      "mozlocal*.* app.measurement* local_db",
-      "wonk.* app.measurement* wonk_db",
-      "leeloo.* app.measurement* inbound_db",
-      "seomoz.* app.measurement* inbound_db",
-      "inbound.* app.measurement* inbound_db",
-      "joe-fox.* app.measurement* analytics_db",
-      "pdfit.* app.measurement* analytics_db",
-      "tilex.* app.measurement* analytics_db",
-      "longbound.* app.measurement* billing_db",
+      {% for item in content_apps %}
+"{{ item }}.* app.env.measurement* content_db",
+{% endfor %}
+      {% for item in local_apps %}
+"{{ item }}.* app.measurement* local_db",
+{% endfor %}
+      {% for item in wonk_apps %}
+"{{ item }}.* app.measurement* wonk_db",
+{% endfor %}
+{% for item in inbound_apps %}
+      "{{ item }}.* app.measurement* inbound_db",
+{% endfor %}
+{% for item in analytics_apps %}
+      "{{ item }}.* app.measurement* analytics_db",
+{% endfor %}
+      {% for item in billing_apps %}
+"{{ item }}.* app.measurement* billing_db",
+{% endfor %}
       "app.measurement*"
   ]
 

@@ -8,7 +8,7 @@ influxdb_version: "0.10.1-1"
 # Needed for first install. Subsequently setting this to true will drop existing downsampled data (if any.)
 reapply_retentions_and_cqs: false
 # Create users, dbs and grant permissions after wall flushing is done
-crete_db_users_grant_permissions: false
+create_db_users_grant_permissions: false
 
 influx_backup_snitch_keys:
      dalstgmesos01: "{{ influx91_backup_snitch_key }}"
@@ -20,3 +20,12 @@ influx_backup_snitch_keys:
 collectd_types_dbs_contents:
     - "{{ lookup('file', 'types.db') }}"
     - "{{ lookup('file', '../../monitoring-agent/files/collectd-plugins/docker/dockerplugin.db') }}"
+
+influx_databases:
+    - metrics_db
+    - content_db
+    - local_db
+    - inbound_db
+    - analytics_db
+    - wonk_db
+    - billing_db
