@@ -17,7 +17,7 @@ statsd_service_port: "9125"
 inbound_apps:
   - leeloo
   - seomoz
-  - inbound
+  - inbound*
 
 content_apps:
   - kairos
@@ -26,12 +26,13 @@ analytics_apps:
   - joe-fox
   - pdfit
   - tilex
+  - mozanalytics*
 
 billing_apps:
   - longboard
 
 wonk_apps:
-  - wonk
+  - wonk*
 
 local_apps:
   - mozlocal*
@@ -43,18 +44,19 @@ db_apps_mapping:
 - app_name:
   - leeloo
   - seomoz
-  - inbound
+  - inbound*
   db_name: inbound_db
 - app_name:
   - joe-fox
   - tilex
   - pdfit
+  - mozanalytics*
   db_name: analytics_db
 - app_name:
   - longboard
   db_name: billing_db
 - app_name:
-  - wonk
+  - wonk*
   db_name: wonk_db
 - app_name:
   - kairos

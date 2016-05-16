@@ -124,24 +124,6 @@
       "nsq.*.topic.*.channel.* app.host.measurement.topic_name.measurement.channel_name.measurement*",
       "nsq.*.topic.* app.host.measurement.topic_name.measurement*",
       "nsq.* app.host.measurement*",
-      {% for item in content_apps %}
-"{{ item }}.* app.env.measurement* content_db",
-{% endfor %}
-      {% for item in local_apps %}
-"{{ item }}.* app.measurement* local_db",
-{% endfor %}
-      {% for item in wonk_apps %}
-"{{ item }}.* app.measurement* wonk_db",
-{% endfor %}
-{% for item in inbound_apps %}
-      "{{ item }}.* app.measurement* inbound_db",
-{% endfor %}
-{% for item in analytics_apps %}
-      "{{ item }}.* app.measurement* analytics_db",
-{% endfor %}
-      {% for item in billing_apps %}
-"{{ item }}.* app.measurement* billing_db",
-{% endfor %}
       "app.measurement*"
   ]
 
