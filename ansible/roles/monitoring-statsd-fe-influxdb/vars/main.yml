@@ -36,4 +36,28 @@ wonk_apps:
 local_apps:
   - mozlocal*
 
-db_apps_mapping: [{"db_name":"local_db", "app_name": ["mozlocal*"]}, {"db_name":"inbound_db", "app_name": ["leeloo", "seomoz", "inbound"]},{"db_name":"analytics_db", "app_name": ["joe-fox", "tilex", "pdfit"]}, {"db_name":"billing_db", "app_name": ["longboard"]}, {"db_name":"wonk_db", "app_name": ["wonk"]}, {"db_name":"content_db", "app_name": ["kairos"]}, {"db_name":"metrics_db", "app_name":[]}]
+db_apps_mapping:
+- app_name:
+  - mozlocal*
+  db_name: local_db
+- app_name:
+  - leeloo
+  - seomoz
+  - inbound
+  db_name: inbound_db
+- app_name:
+  - joe-fox
+  - tilex
+  - pdfit
+  db_name: analytics_db
+- app_name:
+  - longboard
+  db_name: billing_db
+- app_name:
+  - wonk
+  db_name: wonk_db
+- app_name:
+  - kairos
+  db_name: content_db
+- app_name: []
+  db_name: metrics_db
