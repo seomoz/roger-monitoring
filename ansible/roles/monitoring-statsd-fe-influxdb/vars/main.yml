@@ -6,31 +6,3 @@ debug_mode: "false"
 
 #8125 has the actual stasd endpoint (repeaters). This is the port where the repeaters send the data to for each influxdb.
 statsd_service_port: "9125"
-# The metrics_db should always be the last db in the db_mappings. This is because the loop logic to populate the outputs.influxdb in ../templates/telegraf.conf.j2 depends on it
-db_apps_mapping:
-- app_name:
-  - mozlocal*
-  db_name: local_db
-- app_name:
-  - leeloo
-  - seomoz
-  - inbound*
-  db_name: inbound_db
-- app_name:
-  - joe-fox
-  - tilex
-  - pdfit
-  - mozanalytics*
-  db_name: analytics_db
-- app_name:
-  - longboard
-  - billing*
-  db_name: billing_db
-- app_name:
-  - wonk*
-  db_name: wonk_db
-- app_name:
-  - kairos
-  db_name: content_db
-- app_name: []
-  db_name: metrics_db

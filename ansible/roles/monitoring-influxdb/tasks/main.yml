@@ -154,3 +154,18 @@
   become: yes
   tags:
     - influx_backup
+
+# Copy Influx databases creation script to influx hosts
+- name: Influx databases copy script
+  template: src=influxdb.create_dbs.sh.j2  dest=/tmp/influxdb.create_dbs.sh
+  tags:
+    - create_influx_databases
+
+# Creating databases on influx hosts
+- name: Creating influx databases
+  command: "{{ item }}"
+  with_items:
+    - bash /tmp/influxdb.create_dbs.sh
+    #- rm /tmp/influxdb.create_dbs.sh
+  tags:
+    - create_influx_databases

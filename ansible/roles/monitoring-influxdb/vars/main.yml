@@ -5,6 +5,9 @@ influx_data_dir: "{{ base_monitoring_dir }}/influxdb"
 
 influxdb_version: "0.10.1-1"
 
+admin_username: admin
+admin_password: admin
+
 # Needed for first install. Subsequently setting this to true will drop existing downsampled data (if any.)
 reapply_retentions_and_cqs: false
 # Create users, dbs and grant permissions after wall flushing is done
@@ -20,12 +23,3 @@ influx_backup_snitch_keys:
 collectd_types_dbs_contents:
     - "{{ lookup('file', 'types.db') }}"
     - "{{ lookup('file', '../../monitoring-agent/files/collectd-plugins/docker/dockerplugin.db') }}"
-
-influx_databases:
-    - metrics_db
-    - content_db
-    - local_db
-    - inbound_db
-    - analytics_db
-    - wonk_db
-    - billing_db
