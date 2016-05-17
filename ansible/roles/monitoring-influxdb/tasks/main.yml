@@ -166,6 +166,6 @@
   command: "{{ item }}"
   with_items:
     - bash /tmp/influxdb.create_dbs.sh
-    #- rm /tmp/influxdb.create_dbs.sh
+    - rm /tmp/influxdb.create_dbs.sh
   tags:
     - create_influx_databases
