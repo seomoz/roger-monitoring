@@ -1,4 +1,4 @@
-current_databases=$(influx -username "{{ admin_username }}" -password "{{ admin_password }}" -execute "show databases")
+current_databases=$(influx -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "show databases")
 DATABASES="{{ databases_to_backup }}"
 
 for database in $DATABASES
@@ -6,6 +6,6 @@ for database in $DATABASES
     if [[ $current_databases != *"$database"*  ]];
       then
         echo "Creating $database"
-        $(influx -username "{{ admin_username }}" -password "{{ admin_password }}" -execute "create database $database")
+        $(influx -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "create database $database")
     fi
   done

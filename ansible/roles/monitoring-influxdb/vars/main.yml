@@ -5,9 +5,6 @@ influx_data_dir: "{{ base_monitoring_dir }}/influxdb"
 
 influxdb_version: "0.10.1-1"
 
-admin_username: admin
-admin_password: admin
-
 # Needed for first install. Subsequently setting this to true will drop existing downsampled data (if any.)
 reapply_retentions_and_cqs: false
 # Create users, dbs and grant permissions after wall flushing is done
