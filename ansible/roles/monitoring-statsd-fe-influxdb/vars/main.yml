@@ -30,6 +30,7 @@ analytics_apps:
 
 billing_apps:
   - longboard
+  - billing*
 
 wonk_apps:
   - wonk*
