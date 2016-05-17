@@ -7,30 +7,6 @@ debug_mode: "false"
 #8125 has the actual stasd endpoint (repeaters). This is the port where the repeaters send the data to for each influxdb.
 statsd_service_port: "9125"
 
-inbound_apps:
-  - leeloo
-  - seomoz
-  - inbound*
-
-content_apps:
-  - kairos
-
-analytics_apps:
-  - joe-fox
-  - pdfit
-  - tilex
-  - mozanalytics*
-
-billing_apps:
-  - longboard
-  - billing*
-
-wonk_apps:
-  - wonk*
-
-local_apps:
-  - mozlocal*
-
 db_apps_mapping:
 - app_name:
   - mozlocal*

@@ -73,7 +73,7 @@
 
 {% if loop.last %}
   [outputs.influxdb.tagdrop]
-    app = [{% for item in local_apps %}"{{ item }}",{% endfor %} {% for item in wonk_apps %}"{{ item }}",{% endfor %} {% for item in analytics_apps %}"{{ item }}",{% endfor %} {% for item in content_apps %}"{{ item }}",{% endfor %} {% for item in billing_apps %}"{{ item }}",{% endfor %} {% for item in inbound_apps %}"{{ item }}"{% if not loop.last %},{% endif %} {% endfor %}]
+    app = [{% for item_value in db_apps_mapping %}{% if (loop.index != (loop.length - 1)) %}{% for app_name in item_value.app_name %}"{{ app_name }}", {% endfor %}{% else %}{% for app_name in item_value.app_name %}"{{ app_name }}"{% endfor %}{% endif %}{% endfor %}]
 {% else %}
   [outputs.influxdb.tagpass]
     app = [{% for item_values in item_value.app_name %}"{{ item_values }}"{% if not loop.last %},{% endif %}{% endfor %}]
