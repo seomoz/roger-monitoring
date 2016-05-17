@@ -70,7 +70,7 @@
   password = "{{ statsd_influxdb_passwd }}"
   # Set the user agent for the POSTs (can be useful for log differentiation)
   # user_agent = "telegraf"
-
+# Use tagdrop for metrics_db and tagpass for the remaining dbs
 {% if loop.last %}
   [outputs.influxdb.tagdrop]
     app = [{% for item_value in db_apps_mapping %}{% if (loop.index != (loop.length - 1)) %}{% for app_name in item_value.app_name %}"{{ app_name }}", {% endfor %}{% else %}{% for app_name in item_value.app_name %}"{{ app_name }}"{% endfor %}{% endif %}{% endfor %}]
@@ -124,6 +124,7 @@
       "nsq.*.topic.*.channel.* app.host.measurement.topic_name.measurement.channel_name.measurement*",
       "nsq.*.topic.* app.host.measurement.topic_name.measurement*",
       "nsq.* app.host.measurement*",
+      "kairos.* app.env.measurement*",
       "app.measurement*"
   ]
 
