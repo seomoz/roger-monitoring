@@ -94,7 +94,7 @@
 
 # Copy Retention policies and Continuous queries script to influx host
 - name: Copying retention policies and continuous queries on influx host
-  template: src=influxdb.retention.j2 dest=/tmp/influxdb.retention.sh  
+  template: src=influxdb.retention.j2 dest=/tmp/influxdb.retention.sh
   when: reapply_retentions_and_cqs
   tags:
     - retention_policy
@@ -112,6 +112,7 @@
 # Copy Influx users script to influx hosts
 - name: Influx users script to influx hosts
   template: src=influxdb.users.sh.j2  dest=/tmp/influxdb.users.sh
+  when: create_db_users_grant_permissions
   tags:
     - influx_users
 
@@ -119,8 +120,9 @@
 - name: Creating admin and non admin users with privileges on influx hosts
   command: "{{ item }}"
   with_items:
-    - sh /tmp/influxdb.users.sh 
+    - sh /tmp/influxdb.users.sh
     - rm /tmp/influxdb.users.sh
+  when: create_db_users_grant_permissions
   tags:
     - influx_users
 
@@ -152,3 +154,18 @@
   become: yes
   tags:
     - influx_backup
+
+# Copy Influx databases creation script to influx hosts
+- name: Influx databases copy script
+  template: src=influxdb.create_dbs.sh.j2  dest=/tmp/influxdb.create_dbs.sh
+  tags:
+    - create_influx_databases
+
+# Creating databases on influx hosts
+- name: Creating influx databases
+  command: "{{ item }}"
+  with_items:
+    - bash /tmp/influxdb.create_dbs.sh
+    - rm /tmp/influxdb.create_dbs.sh
+  tags:
+    - create_influx_databases

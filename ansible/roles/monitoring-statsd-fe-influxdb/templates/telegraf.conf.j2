@@ -50,14 +50,15 @@
 ###############################################################################
 
 [outputs]
+{% for item_value in db_apps_mapping %}
 
 # Configuration for influxdb server to send metrics to
-[outputs.influxdb]
+[[outputs.influxdb]]
   # The full HTTP endpoint URL for your InfluxDB instance
   # Multiple urls can be specified for InfluxDB cluster support.
   urls = [ "http://{{ inventory_hostname }}:8086" ] # required
   # The target database for metrics (telegraf will create it if not exists)
-  database = "{{ target_db }}" # required
+  database = "{{ item_value.db_name }}" # required
   # Precision of writes, valid values are n, u, ms, s, m, and h
   # note: using second precision greatly helps InfluxDB compression
   precision = "s"
@@ -69,6 +70,15 @@
   password = "{{ statsd_influxdb_passwd }}"
   # Set the user agent for the POSTs (can be useful for log differentiation)
   # user_agent = "telegraf"
+# Use tagdrop for metrics_db and tagpass for the remaining dbs
+{% if loop.last %}
+  [outputs.influxdb.tagdrop]
+    app = [{% for item_value in db_apps_mapping %}{% if (loop.index != (loop.length - 1)) %}{% for app_name in item_value.app_name %}"{{ app_name }}", {% endfor %}{% else %}{% for app_name in item_value.app_name %}"{{ app_name }}"{% endfor %}{% endif %}{% endfor %}]
+{% else %}
+  [outputs.influxdb.tagpass]
+    app = [{% for item_values in item_value.app_name %}"{{ item_values }}"{% if not loop.last %},{% endif %}{% endfor %}]
+{% endif %}
+{% endfor %}
 
 ###############################################################################
 #                                  PLUGINS                                    #
