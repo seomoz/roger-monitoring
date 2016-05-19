@@ -39,6 +39,7 @@ LoadPlugin {{ plugin }}
 # Track influxd processes so we can alert on failure
 <Plugin "processes">
   Process "influxd"
+  Process "telegraf"
 </Plugin>
 
  # Below lines for adding python plugins
