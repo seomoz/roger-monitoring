@@ -9,6 +9,7 @@
 - name: Download influxdb package
   get_url: url="{{ influxdb_download_url_path_prefix }}influxdb_{{ influxdb_version }}_amd64.deb" dest="{{ monitoring_tmp_dir }}"
   become: yes
+  always_run: yes
   tags:
     - monitoring
 
