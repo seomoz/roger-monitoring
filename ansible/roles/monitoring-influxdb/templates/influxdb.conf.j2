@@ -154,14 +154,13 @@ reporting-disabled = false
 
 ###
 ### [cluster]
-###
-### Controls non-Raft cluster behavior, which generally includes how data is
-### shared across shards.
+### This section contains configuration options for query management. 
 ###
 
 [cluster]
   shard-writer-timeout = "10s" # The time within which a shard must respond to write.
   write-timeout = "5s" # The time within which a write operation must complete on the cluster.
+  log-queries-after = "5s" #The maximum time a query can run after which InfluxDB logs the query with a Detected slow query message
 
 ###
 ### [retention]
