@@ -25,6 +25,15 @@
 
 # Configuration for telegraf agent
 [agent]
+
+  ## Telegraf will send metrics to outputs in batches of at
+  ## most metric_batch_size metrics.
+  metric_batch_size = 2000
+  ## For failed writes, telegraf will cache metric_buffer_limit metrics for each
+  ## output, and will flush this buffer on a successful write. Oldest metrics
+  ## are dropped first when this buffer fills.
+  metric_buffer_limit = 10000
+
   # Default data collection interval for all plugins
   interval = "10s"
   # Rounds collection interval to 'interval'
@@ -70,7 +79,7 @@
   password = "{{ statsd_influxdb_passwd }}"
   # Set the user agent for the POSTs (can be useful for log differentiation)
   # user_agent = "telegraf"
-# Use tagdrop for metrics_db and tagpass for the remaining dbs
+  # Use tagdrop for metrics_db and tagpass for the remaining dbs
 {% if loop.last %}
   [outputs.influxdb.tagdrop]
     app = [{% for item_value in db_apps_mapping %}{% if (loop.index != (loop.length - 1)) %}{% for app_name in item_value.app_name %}"{{ app_name }}", {% endfor %}{% else %}{% for app_name in item_value.app_name %}"{{ app_name }}"{% endfor %}{% endif %}{% endfor %}]
