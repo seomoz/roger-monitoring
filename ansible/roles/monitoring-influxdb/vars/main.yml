@@ -3,7 +3,7 @@
 monitoring_tmp_dir: "{{ base_monitoring_dir }}/tmp"
 influx_data_dir: "{{ base_monitoring_dir }}/influxdb"
 
-influxdb_version: "0.13.0"
+influxdb_version: "0.12.2-1"
 
 # Needed for first install. Subsequently setting this to true will drop existing downsampled data (if any.)
 reapply_retentions_and_cqs: false
