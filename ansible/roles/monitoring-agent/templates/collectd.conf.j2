@@ -193,4 +193,16 @@ Import "mesos-slave"
         CleanMetrics true
     </Module>
 </Plugin>
+
+<Plugin "python">
+    ModulePath "{{ collectd_python_plugin_dir }}"
+    Import "marathon_tasks"
+    <Module "marathon_tasks">
+        Host "localhost"
+        Port 8080
+        Verbose false
+        User "readall"
+        Pass "readall"
+    </Module>
+</Plugin>
 {% endif %}

@@ -189,15 +189,23 @@
     - packages
     - monitor-docker
 
-- name: Install docker collectd dependency - 1
+- name: Install docker and marathon collectd dependency - python-dateutil
   pip: name=python-dateutil version=2.4.2
-  when: not which_docker.failed
   become: yes
   tags:
     - monitoring
     - monitor-docker
+    - monitor-marathon
 
-- name: Install docker collectd dependency - 2
+- name: Install marathon collectd dependency - pytz
+  when: is_in_marathon_servers is defined
+  pip: name=pytz version=2016.4
+  become: yes
+  tags:
+    - monitoring
+    - monitor-marathon
+
+- name: Install docker collectd dependency - docker-py
   pip: name=docker-py version=1.6.0
   when: not which_docker.failed
   become: yes
@@ -230,8 +238,7 @@
   tags:
     - monitor-docker
 
-# plugin for marathon
-- name: Install marathon collectd by copying the python plugin
+- name: Install marathon collectd plugin
   copy: src=collectd-plugins/marathon/marathon.py dest="{{ collectd_python_plugin_dir }}"
   when: is_in_marathon_servers is defined
   become: yes
@@ -240,7 +247,16 @@
     - monitoring
     - monitor-marathon
 
-- name: Install chronos collectd by copying the python plugin
+- name: Install marathon_tasks collectd plugin
+  copy: src=collectd-plugins/marathon_tasks/marathon_tasks.py dest="{{ collectd_python_plugin_dir }}"
+  when: is_in_marathon_servers is defined
+  become: yes
+  notify: restart collectd
+  tags:
+    - monitoring
+    - monitor-marathon
+
+- name: Install chronos collectd plugin
   copy: src=collectd-plugins/chronos/chronos.py dest="{{ collectd_python_plugin_dir }}"
   when: is_in_masters is defined
   become: yes
