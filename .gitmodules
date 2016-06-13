@@ -10,3 +10,6 @@
 [submodule "ansible/roles/monitoring-agent/files/collectd-plugins/collectd-haproxy"]
 	path = ansible/roles/monitoring-agent/files/collectd-plugins/collectd-haproxy
 	url = https://github.com/seomoz/collectd-haproxy.git
+[submodule "ansible/roles/monitoring-agent/files/collectd-plugins/marathon_tasks"]
+	path = ansible/roles/monitoring-agent/files/collectd-plugins/marathon_tasks
+	url = git@github.com:seomoz/collectd-marathon-tasks.git

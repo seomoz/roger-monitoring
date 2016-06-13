@@ -6,7 +6,6 @@ collectd_interval_seconds: 20
 collectd_load_plugins:
       - bind
       - cpu
-      - disk
       - df
       - load
       - memory
