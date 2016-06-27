@@ -1,5 +1,9 @@
 ---
 # Monitoring agents (like collectd) are needed to gather and send system statistics for monitoring and alerting
+# This script installs the collectd from APT to make sure all required and
+# recommend packages exist.  It also installs the patched collectd from
+# GitHub.  This patched version can handle 128 byte strings instead of just
+# 64 byte strings.
 
 # Sending logs to logstash
 - name: Update configuration to send syslogs to logstash
@@ -63,17 +67,42 @@
   tags:
     - monitoring
 
-# There's a dangling link that collectd 5.4 leaves behind, need to research more on this
-- name: unlink /etc/rc2.d/S95collectd
-  file: path=/etc/rc2.d/S95collectd state=absent
-  become: yes
-  tags:
-    - monitoring
-
 - name: Install collectd-core
   apt: name=collectd-core force=yes install_recommends="{{ collectd_install_recommends }}" state=latest
   become: yes
   notify: restart collectd
+  tags:
+    - monitoring
+
+- name: Install collectd128 required packages
+  with_items: "{{ collectd128_packages }}"
+  apt: name="{{ item }}" state="latest"
+  become: yes
+  tags:
+    - collectd128
+    - monitoring
+    - packages
+
+- name: Download patched collectd
+  get_url: url="{{ collectd128_package_url }}" dest="/tmp/{{ collectd128_package_file }}" sha256sum="{{ collectd128_package_sha256 }}"
+  tags:
+    - collectd128
+    - monitoring
+    - install
+
+- name: Install patched collectd
+  unarchive: copy=no dest="/opt" src="/tmp/{{ collectd128_package_file }}" creates="/opt/{{ collectd128_package }}"
+  become: yes
+  notify: restart collectd
+  tags:
+    - collectd128
+    - monitoring
+    - install
+
+# There's a dangling link that collectd 5.4 leaves behind, need to research more on this
+- name: unlink /etc/rc2.d/S95collectd
+  file: path=/etc/rc2.d/S95collectd state=absent
+  become: yes
   tags:
     - monitoring
 
@@ -92,9 +121,12 @@
 
 - name: Install collectd upstart script
   template: src=collectd.conf.upstart.j2 dest=/etc/init/collectd.conf
+  notify: restart collectd
   become: yes
   tags:
+    - collectd128
     - monitoring
+    - install
 
 # The following are needed only if this node is part of the cluster os
 
