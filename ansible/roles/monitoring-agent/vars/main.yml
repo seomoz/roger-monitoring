@@ -16,3 +16,17 @@ collectd_load_plugins:
       - vmem
 collectd_log_dir:  "{{ base_data_dir }}/collectd"
 collectd_python_plugin_dir:  "/usr/share/collectd/python"
+
+# Needed for the patched collectd (collectd128)
+collectd128_package: "collectd128-5.5.1"
+collectd128_package_file: "{{ collectd128_package }}.tgz"
+collectd128_package_sha256: "c29546d30d1ed939ca949da68fdd5057b266a57727ace9e0b5d2fdb150a4d17d"
+collectd128_package_url: "https://github.com/seomoz/collectd/raw/jord/collectd128/dist/{{ collectd128_package_file }}"
+collectd128_install_base: "/opt"
+collectd128_packages:
+      - libcurl3
+      - libxml2
+      - libxml2-dev
+      - python-dev
+      - libyajl-dev
+      - libyajl2

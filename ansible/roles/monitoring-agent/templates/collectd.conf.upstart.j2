@@ -30,7 +30,8 @@ stop on runlevel [!2345]
 # `pre-start` command check before collectd runs, and subsequent
 # `exec` command parameters below. Remember that upstart runs all
 # shell commands via `sh -e`.
-env DAEMON=/usr/sbin/collectd
+# env DAEMON=/usr/sbin/collectd # Uncomment to restore regular collectd agent.
+env DAEMON=/opt/{{ collectd128_package }}/sbin/collectd
 
 # Tell upstart to wait for collectd to SIGSTOP itself, signaling it is ready
 # to run. Warning: this only works with collectd 5.5 and newer. You'll have to
