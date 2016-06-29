@@ -33,8 +33,7 @@
   ## For failed writes, telegraf will cache metric_buffer_limit metrics for each
   ## output, and will flush this buffer on a successful write. Oldest metrics
   ## are dropped first when this buffer fills.
-  # metric_buffer_limit comes in with Influxdb 0.13+
-  # metric_buffer_limit = 10000
+  metric_buffer_limit = 10000
 
   # Default data collection interval for all plugins
   interval = "10s"
