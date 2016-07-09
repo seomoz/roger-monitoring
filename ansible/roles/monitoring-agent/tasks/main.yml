@@ -112,6 +112,7 @@
   notify: restart collectd
   tags:
     - monitoring
+    - configuration
 
 - name: Remove collectd init.d script
   file: path=/etc/init.d/collectd state=absent
