@@ -82,8 +82,8 @@ Import "mesos-master"
 ModulePath "{{ collectd_python_plugin_dir }}"
 Import "chronos"
   <Module "chronos">
-      Host "localhost"
-      Port 4400
+      Host "{{ chronos_webui_host }}"
+      Port {{ chronos_webui_port }}
       Verbose false
   </Module>
 </Plugin>
