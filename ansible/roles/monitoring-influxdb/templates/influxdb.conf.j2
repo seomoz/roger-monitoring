@@ -138,7 +138,7 @@ reporting-disabled = false
 [cluster]
   shard-writer-timeout = "10s" # The time within which a shard must respond to write.
   write-timeout = "15s" # The time within which a write operation must complete on the cluster.
-  query-timeout = "5m" # The maximum time for which a query can run on your instance before InfluxDB kills the query.
+  query-timeout = "10m" # The maximum time for which a query can run on your instance before InfluxDB kills the query.
   # log-queries-after comes in with Influxdb 0.13+
   # log-queries-after = "20s" #The maximum time a query can run after which InfluxDB logs the query with a Detected slow query message
 
