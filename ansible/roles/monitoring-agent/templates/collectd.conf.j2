@@ -201,8 +201,8 @@ Import "mesos-slave"
         Host "localhost"
         Port 8080
         Verbose false
-        User "readall"
-        Pass "readall"
+        User "{{ marathon_collectd_user }}"
+        Pass "{{ marathon_collectd_pass }}"
     </Module>
 </Plugin>
 {% endif %}
