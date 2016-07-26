@@ -187,8 +187,8 @@ Import "mesos-slave"
     ModulePath "{{ collectd_python_plugin_dir }}"
     Import "marathon"
     <Module "marathon">
-        Host "localhost"
-        Port 8080
+        Host "{{ marathon_webui_host }}"
+        Port {{ marathon_webui_port }}
         Verbose false
         CleanMetrics true
     </Module>
@@ -198,8 +198,8 @@ Import "mesos-slave"
     ModulePath "{{ collectd_python_plugin_dir }}"
     Import "marathon_tasks"
     <Module "marathon_tasks">
-        Host "localhost"
-        Port 8080
+        Host "{{ marathon_webui_host }}"
+        Port {{ marathon_webui_port }}
         Verbose false
         User "{{ marathon_collectd_user }}"
         Pass "{{ marathon_collectd_pass }}"
