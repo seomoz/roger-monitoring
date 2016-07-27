@@ -111,7 +111,7 @@
 # Copy Retention policies and Continuous queries script to influx host
 - name: Copying retention policies and continuous queries on influx host
   template: src=influxdb.retention.j2 dest=/tmp/influxdb.retention.sh
-  when: reapply_retentions_and_cqs
+  when: apply_retentions_and_cqs is defined and apply_retentions_and_cqs|bool
   tags:
     - retention_policy
 
@@ -121,14 +121,31 @@
   with_items:
     - sh /tmp/influxdb.retention.sh
     - rm /tmp/influxdb.retention.sh
-  when: reapply_retentions_and_cqs
+  when: apply_retentions_and_cqs is defined and apply_retentions_and_cqs|bool
   tags:
     - retention_policy
+
+# Copy Dropping Retention policies and Continuous queries script to influx host
+- name: Copying drop retention policies and continuous queries on influx host
+  template: src=influxdb.drop_retention.j2 dest=/tmp/influxdb.drop_retention.sh
+  when: drop_retentions_and_cqs is defined and drop_retentions_and_cqs|bool
+  tags:
+    - drop_retention_policy
+
+# Dropping retention policies and continuous queries on influx database
+- name: Dropping retention policies and continuous queries on influx database
+  command: "{{ item }}"
+  with_items:
+    - sh /tmp/influxdb.drop_retention.sh
+    - rm /tmp/influxdb.drop_retention.sh
+  when: drop_retentions_and_cqs is defined and drop_retentions_and_cqs|bool
+  tags:
+    - drop_retention_policy
 
 # Copy Influx users script to influx hosts
 - name: Influx users script to influx hosts
   template: src=influxdb.users.sh.j2  dest=/tmp/influxdb.users.sh
-  when: create_db_users_grant_permissions
+  when: create_db_users_grant_permissions is defined and create_db_users_grant_permissions|bool
   tags:
     - influx_users
 
@@ -138,7 +155,7 @@
   with_items:
     - sh /tmp/influxdb.users.sh
     - rm /tmp/influxdb.users.sh
-  when: create_db_users_grant_permissions
+  when: create_db_users_grant_permissions is defined and create_db_users_grant_permissions|bool
   tags:
     - influx_users
 
