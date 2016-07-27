@@ -1,0 +1,10 @@
+{% for database in databases %}
+
+  influx -database "{{ database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "drop retention policy _1m on {{ database }}"
+  influx -database "{{ database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "drop retention policy _10m on {{ database }}"
+
+  influx -database "{{ database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "drop continuous query downsample_{{ database }}_1m on {{ database }}"
+  influx -database "{{ database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "drop continuous query downsample_{{ database }}_10m on {{ database }}"
+
+{% endfor %}
+
