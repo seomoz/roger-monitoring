@@ -1,14 +1,8 @@
 {% for database in databases %}
   influx -database "{{ database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "alter retention policy default on {{ database }} duration 14d"
 
-  influx -database "{{ database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "drop retention policy _1m on {{ database }}"
-  influx -database "{{ database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "drop retention policy _10m on {{ database }}"
-
   influx -database "{{ database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "create retention policy _1m on {{ database }} duration  30d replication 1"
   influx -database "{{ database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "create retention policy _10m on {{ database }} duration  90d replication 1"
-
-  influx -database "{{ database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "drop continuous query downsample_{{ database }}_1m on {{ database }}"
-  influx -database "{{ database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "drop continuous query downsample_{{ database }}_10m on {{ database }}"
 
 {% endfor %}
 
@@ -22,8 +16,12 @@
 
 {% else %}
 
-  influx -database "{{ collectd_database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "create continuous query downsample_{{ collectd_database }}_1m ON {{ collectd_database }} begin select last(value) as last, sum(value) as sum, mean(value) as value into {{ collectd_database }}._1m.:MEASUREMENT from {{ collectd_database }}.\"default\"./.*/ where metric_type != 'timing' group by time(1m), * end"
-  influx -database "{{ collectd_database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "create continuous query downsample_{{ collectd_database }}_10m on {{ collectd_database }} begin select last(last) as last, sum(sum) as sum, mean(value) as value into {{ collectd_database }}._10m.:MEASUREMENT from {{ collectd_database }}._1m./.*/ where metric_type != 'timing' group by time(10m), * end"
+  {% if downsample_collectd_metrics is defined and downsample_collectd_metrics|bool %}  
+
+     influx -database "{{ collectd_database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "create continuous query downsample_{{ collectd_database }}_1m ON {{ collectd_database }} begin select last(value) as last, sum(value) as sum, mean(value) as value into {{ collectd_database }}._1m.:MEASUREMENT from {{ collectd_database }}.\"default\"./.*/ where metric_type != 'timing' group by time(1m), * end"
+     influx -database "{{ collectd_database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "create continuous query downsample_{{ collectd_database }}_10m on {{ collectd_database }} begin select last(last) as last, sum(sum) as sum, mean(value) as value into {{ collectd_database }}._10m.:MEASUREMENT from {{ collectd_database }}._1m./.*/ where metric_type != 'timing' group by time(10m), * end"
+  
+   {% endif %}
 
 {% endif %}
 
@@ -33,3 +31,4 @@
   influx -database "{{ tools_database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "drop retention policy _10m on {{ tools_database }}"
   influx -database "{{ tools_database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "drop continuous query downsample_{{ tools_database }}_1m on {{ tools_database }}"
   influx -database "{{ tools_database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "drop continuous query downsample_{{ tools_database }}_10m on {{ tools_database }}"
+
