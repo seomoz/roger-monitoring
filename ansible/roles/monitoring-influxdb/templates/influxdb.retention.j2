@@ -21,8 +21,8 @@
 
   {% if downsample_collectd_metrics is defined and downsample_collectd_metrics|bool %}  
 
-     influx -database "{{ collectd_database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "create continuous query downsample_{{ collectd_database }}_1m ON {{ collectd_database }} begin select last(value) as last, sum(value) as sum, mean(value) as value into {{ collectd_database }}._1m.:MEASUREMENT from {{ collectd_database }}.\"default\"./.*/ where metric_type != 'timing' group by time(1m), * end"
-     influx -database "{{ collectd_database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "create continuous query downsample_{{ collectd_database }}_10m on {{ collectd_database }} begin select last(last) as last, sum(sum) as sum, mean(value) as value into {{ collectd_database }}._10m.:MEASUREMENT from {{ collectd_database }}._1m./.*/ where metric_type != 'timing' group by time(10m), * end"
+     influx -database "{{ collectd_database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "create continuous query downsample_{{ collectd_database }}_1m ON {{ collectd_database }} begin select mean(value) as value into {{ collectd_database }}._1m.:MEASUREMENT from {{ collectd_database }}.\"default\"./.*/ group by time(1m), * end"
+     influx -database "{{ collectd_database }}" -username "{{ influx_admin_user }}" -password "{{ influx_admin_password }}" -execute "create continuous query downsample_{{ collectd_database }}_10m on {{ collectd_database }} begin select mean(value) as value into {{ collectd_database }}._10m.:MEASUREMENT from {{ collectd_database }}._1m./.*/ group by time(10m), * end"
   
    {% endif %}
 
