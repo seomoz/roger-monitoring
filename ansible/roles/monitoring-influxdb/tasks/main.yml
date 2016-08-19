@@ -68,7 +68,6 @@
   notify: restart influxdb
   tags:
     - monitoring
-    - influx_backup
 
 # Creating a concatenated types.db (as the influxdb collectd plugin currently does not support multiple typesdb file)
 - name: Create merged types.db for collectd plugin
