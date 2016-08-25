@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#!/usr/bin/python
 
 import collectd
 import json
@@ -10,6 +10,7 @@ VERBOSE_LOGGING = False
 MESOS_MASTER_URL = ""
 
 def get_task_counts(master_url):
+    """Return counts of all the tasks in various states"""
     url = '{}/metrics/snapshot'.format(master_url)
     resp = requests.get('{}'.format(url))
     resp_data = resp.json()
@@ -19,6 +20,7 @@ def get_task_counts(master_url):
     return counts
 
 def get_tasks(master_url):
+    """Return the a map of tasks to allocation data"""
     tasks = {}
     limit = int(sum(get_task_counts(master_url).values()))
     url = '{}/tasks?limit={}'.format(master_url, limit)
@@ -45,6 +47,7 @@ def configure_callback(conf):
     log_verbose('Configured with host=%s, port=%s, url=%s' % (MESOS_MASTER_HOST, MESOS_MASTER_PORT, MESOS_MASTER_URL))
 
 def read_callback():
+    """Read callback called"""
     log_verbose('Read callback called')
     tasks = get_tasks(MESOS_MASTER_URL)
     for taskid, allocations in tasks.items():
@@ -53,7 +56,7 @@ def read_callback():
         dispatch_stat(taskid, 'bytes', 'disk_allocation', allocations['disk'])
 
 def dispatch_stat(plugin_instance, type, type_instance, value):
-    #Read a key from info response data and dispatch a value
+    """Read a key from info response data and dispatch a value"""
     if value is None:
         collectd.warning('mesos-master-tasks plugin: Value not found for %s/%s' % (plugin_instance, type_instance))
         return
