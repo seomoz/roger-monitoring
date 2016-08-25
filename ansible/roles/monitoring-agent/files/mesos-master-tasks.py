@@ -42,7 +42,7 @@ def configure_callback(conf):
         else:
             collectd.warning('mesos master task plugin: Unknown config key: %s.' % node.key)
     MESOS_MASTER_URL = "http://" + MESOS_MASTER_HOST + ":" + str(MESOS_MASTER_PORT)
-    log_verbose('Configured with host=%s, port=%s, url=%s' % (MARATHON_HOST, MARATHON_PORT, MARATHON_URL))
+    log_verbose('Configured with host=%s, port=%s, url=%s' % (MESOS_MASTER_HOST, MESOS_MASTER_PORT, MESOS_MASTER_URL))
 
 def read_callback():
     log_verbose('Read callback called')
