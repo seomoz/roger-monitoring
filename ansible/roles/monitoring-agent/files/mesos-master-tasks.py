@@ -4,10 +4,10 @@ import collectd
 import json
 import requests
 
-MESOS_MASTER_HOST = "localhost"
+MESOS_MASTER_HOST = 'localhost'
 MESOS_MASTER_PORT = 5050
 VERBOSE_LOGGING = False
-MESOS_MASTER_URL = ""
+MESOS_MASTER_URL = ''
 
 def get_task_counts(master_url):
     """Return counts of all the tasks in various states"""
