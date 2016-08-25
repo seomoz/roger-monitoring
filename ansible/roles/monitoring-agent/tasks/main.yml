@@ -133,7 +133,7 @@
 
 - name: Install zookeeper collectd by copying the python plugin
   copy: src=zk-collectd.py dest="{{ collectd_python_plugin_dir }}"
-  when: is_in_masters is defined
+  when: is_in_masters is defined and is_in_masters|bool
   become: yes
   notify: restart collectd
   tags:
@@ -141,7 +141,7 @@
     - monitor-zookeeper
 
 - name: Copy the required python plugin mesos_master file
-  when: is_in_masters is defined
+  when: is_in_masters is defined and is_in_masters|bool
   copy: src=mesos-master.py dest="{{ collectd_python_plugin_dir }}"
   become: yes
   notify: restart collectd
@@ -149,8 +149,17 @@
     - monitoring
     - monitor-mesos
 
+- name: Copy the required python plugin mesos_master-tasks file
+  when: is_in_masters is defined and is_in_masters|bool
+  copy: src=mesos-master-tasks.py dest="{{ collectd_python_plugin_dir }}"
+  become: yes
+  notify: restart collectd
+  tags:
+    - monitoring
+    - monitor-mesos
+
 - name: Copy the required python plugin mesos_slave file
-  when: is_in_slaves is defined
+  when: is_in_slaves is defined and is_in_slaves|bool
   copy: src=mesos-slave.py dest="{{ collectd_python_plugin_dir }}"
   become: yes
   notify: restart collectd
@@ -160,7 +169,7 @@
 
 # for bamboo server status check
 - name: Copy the required python plugin bamboo status plugin file
-  when: is_in_bamboo_servers is defined
+  when: is_in_bamboo_servers is defined and is_in_bamboo_servers|bool
   copy: src=bamboo_status.py dest="{{ collectd_python_plugin_dir }}"
   become: yes
   notify: restart collectd
@@ -170,7 +179,7 @@
 
 # for bamboo server config-hash check
 - name: Copy the required python plugin bamboo config hash plugin file
-  when: is_in_bamboo_servers is defined
+  when: is_in_bamboo_servers is defined and is_in_bamboo_servers|bool
   copy: src=bamboo_confighash.py dest="{{ collectd_python_plugin_dir }}"
   become: yes
   notify: restart collectd
@@ -291,7 +300,7 @@
 
 - name: Install chronos collectd plugin
   copy: src=collectd-plugins/chronos/chronos.py dest="{{ collectd_python_plugin_dir }}"
-  when: is_in_masters is defined
+  when: is_in_masters is defined and is_in_masters|bool
   become: yes
   notify: restart collectd
   tags:
