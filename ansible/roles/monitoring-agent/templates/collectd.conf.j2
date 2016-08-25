@@ -80,6 +80,16 @@ Import "mesos-master"
 
 <Plugin "python">
 ModulePath "{{ collectd_python_plugin_dir }}"
+Import "mesos-master-tasks"
+  <Module "mesos-master-tasks">
+      Host {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}
+      Port 5050
+      Verbose false
+  </Module>
+</Plugin>
+
+<Plugin "python">
+ModulePath "{{ collectd_python_plugin_dir }}"
 Import "chronos"
   <Module "chronos">
       Host "{{ chronos_webui_host }}"

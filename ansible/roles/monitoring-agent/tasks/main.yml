@@ -149,6 +149,15 @@
     - monitoring
     - monitor-mesos
 
+- name: Copy the required python plugin mesos_master-tasks file
+  when: is_in_masters is defined
+  copy: src=mesos-master-tasks.py dest="{{ collectd_python_plugin_dir }}"
+  become: yes
+  notify: restart collectd
+  tags:
+    - monitoring
+    - monitor-mesos
+
 - name: Copy the required python plugin mesos_slave file
   when: is_in_slaves is defined
   copy: src=mesos-slave.py dest="{{ collectd_python_plugin_dir }}"
