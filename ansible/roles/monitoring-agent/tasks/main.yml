@@ -273,9 +273,17 @@
     - monitoring
     - monitor-docker
 
-#This is temporary fix,until we find a different way to collect docker metrics
-- lineinfile: dest=/etc/crontab line="*/10 *  * * *   root    service collectd restart"
+# Make sure this line is removed from /etc/crontab
+- lineinfile: dest=/etc/crontab line="*/10 *  * * *   root    service collectd restart" state=absent
   when: not which_docker.failed
+  become: yes
+  tags:
+    - monitor-docker
+
+#This is temporary fix,until we find a different way to collect docker metrics
+- name: Add cron to restart collectd every 5 minutes
+  when: not which_docker.failed
+  cron: name="Collectd restart" minute="*/5" user="root" job="service collectd restart"
   become: yes
   tags:
     - monitor-docker
