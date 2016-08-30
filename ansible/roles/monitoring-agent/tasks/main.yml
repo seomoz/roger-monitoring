@@ -283,7 +283,7 @@
 #This is temporary fix,until we find a different way to collect docker metrics
 - name: Add cron to restart collectd every 5 minutes
   when: not which_docker.failed
-  cron: name="Collectd restart" minute="*/5" user="root" job="service collectd restart"
+  cron: name="Collectd restart" minute="*/5" user="root" job="sudo service collectd restart"
   become: yes
   tags:
     - monitor-docker
