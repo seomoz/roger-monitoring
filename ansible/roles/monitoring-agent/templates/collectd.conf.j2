@@ -215,4 +215,16 @@ Import "mesos-slave"
         Pass "{{ marathon_collectd_pass }}"
     </Module>
 </Plugin>
+
+<Plugin "python">
+    ModulePath "{{ collectd_python_plugin_dir }}"
+    Import "marathon_apps"
+    <Module "marathon_apps">
+        Host "localhost"
+        Port 8080
+        Verbose false
+        User "{{ marathon_collectd_user }}"
+        Pass "{{ marathon_collectd_pass }}"
+    </Module>
+</Plugin>
 {% endif %}
