@@ -306,6 +306,15 @@
     - monitoring
     - monitor-marathon
 
+- name: Install marathon_apps collectd plugin
+  copy: src=collectd-plugins/marathon_tasks/marathon_apps.py dest="{{ collectd_python_plugin_dir }}"
+  when: is_in_marathon_servers is defined
+  become: yes
+  notify: restart collectd
+  tags:
+    - monitoring
+    - monitor-marathon
+
 - name: Install chronos collectd plugin
   copy: src=collectd-plugins/chronos/chronos.py dest="{{ collectd_python_plugin_dir }}"
   when: is_in_masters is defined and is_in_masters|bool
