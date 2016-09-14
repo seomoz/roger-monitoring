@@ -36,10 +36,11 @@ LoadPlugin {{ plugin }}
   ValuesPercentage true
 </Plugin>
 
-# Track influxd processes so we can alert on failure
+# Track processes so we can alert on failure
 <Plugin "processes">
   Process "influxd"
   Process "telegraf"
+  ProcessMatch "bind" "named"
 </Plugin>
 
  # Below lines for adding python plugins
