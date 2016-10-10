@@ -38,6 +38,8 @@ LoadPlugin {{ plugin }}
 
 # Track processes so we can alert on failure
 <Plugin "processes">
+  Process "mesos-master"
+  Process "mesos-slave"
   Process "influxd"
   Process "telegraf"
   ProcessMatch "bind" "named"
