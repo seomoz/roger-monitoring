@@ -1,0 +1,19 @@
+influx_admin_user: local_user
+influx_admin_password: local_user
+alertd_influx_user: local_user
+alertd_influx_pass: local_user
+collectd_database: collectd_db
+tools_database: test_db
+db_apps_mapping:
+- app_name:
+  - appname1*
+  db_name: db1
+- app_name:
+  - appname2*
+  - appname3*
+  db_name: db2
+- app_name:
+  - roger-tools
+  db_name: test_db
+- app_name: []
+  db_name: db3 # SHOULD always be the last db in the db_mappings. This is because the loop logic to populate the [outputs.influxdb] in ../templates/telegraf.conf.j2 depends on it.
