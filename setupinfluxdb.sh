@@ -12,7 +12,7 @@ REPO_DIR="$1"
 DATABASES="$2"
 ARR_DATABASES=( $DATABASES )
 
-databases="["
+databases="[ \"{{ tools_database }}\","
 for ((i=0; i<(${#ARR_DATABASES[*]}-1); i++));
 do
     databases="$databases \"${ARR_DATABASES[i]}\","
@@ -36,7 +36,7 @@ ansible-playbook -i $REPO_DIR/../roger-mesos/vagrant/single_node/hosts/single $R
 
 echo "Applying Retention policies on databases"
 
-ansible-playbook -i $REPO_DIR/../roger-mesos/vagrant/single_node/hosts/single $REPO_DIR/ansible/monitoring-backend.yml -e "@$REPO_DIR/ansible_vars.yml" --diff --tags="retention_policy" --user=vagrant --ask-pass -e "apply_retentions_and_cqs=true" -e "{\"databases\": $databases }" -e "tools_database=\"{{ tools_database }}\""
+ansible-playbook -i $REPO_DIR/../roger-mesos/vagrant/single_node/hosts/single $REPO_DIR/ansible/monitoring-backend.yml -e "@$REPO_DIR/ansible_vars.yml" --diff --tags="retention_policy" --user=vagrant --ask-pass -e "apply_retentions_and_cqs=true" -e "{\"databases\": $databases }"
 
 echo "Installing and setting up Telegraf for Statsd metrics"
 
