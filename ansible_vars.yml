@@ -3,6 +3,10 @@ influx_admin_password: local_user
 alertd_influx_user: local_user
 alertd_influx_pass: local_user
 collectd_database: collectd_db
+marathon_collectd_user: local_user
+marathon_collectd_pass: local_user
+chronos_collectd_user: local_user
+chronos_collectd_pass: local_user
 tools_database: test_db
 db_apps_mapping:
 - app_name:
