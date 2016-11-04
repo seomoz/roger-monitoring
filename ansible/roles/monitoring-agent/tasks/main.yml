@@ -8,7 +8,6 @@
 # Sending logs to logstash
 - name: Update configuration to send syslogs to logstash
   template: src=logstash-emitter-forward-to-collector.conf.j2 dest="/etc/rsyslog.d/{{ logstash_dest_filename }}"
-  become: yes
   when: disable_logstash is not defined or not disable_logstash
   notify: restart rsyslog
   tags:
@@ -18,7 +17,6 @@
 - name: Remove configuration to send syslogs to logstash
   file: name="/etc/rsyslog.d/{{ logstash_dest_filename }}" state=absent
   when: disable_logstash is defined and disable_logstash
-  become: yes
   notify: restart rsyslog
   tags:
     - logstash
@@ -28,7 +26,6 @@
   with_flattened:
     - "{{ group_dirs_to_create | default([]) }}"
     - "{{ host_dirs_to_create | default([]) }}"
-  become: yes
   tags:
     - configuration
 
@@ -37,39 +34,33 @@
   with_flattened:
     - "{{ collectd_log_dir }}"
     - "{{ collectd_python_plugin_dir }}"
-  become: yes
   tags:
     - monitoring
 
 - name: Add collectd repository key to local keychain
   apt_key: url=http://pkg.ci.collectd.org/pubkey.asc state=present
-  become: yes
   tags:
     - monitoring
 
 - name: Add collectd repository to apt sources list
   apt_repository: repo='deb http://pkg.ci.collectd.org/deb/ trusty collectd-5.5' state=present
-  become: yes
   tags:
     - monitoring
 
 - name: Update package repo cache
   apt: update_cache=yes
-  become: yes
   tags:
     - packages
     - update_cache
 
 - name: Install collectd
   apt: name=collectd force=yes install_recommends="{{ collectd_install_recommends }}" state=latest
-  become: yes
   notify: restart collectd
   tags:
     - monitoring
 
 - name: Install collectd-core
   apt: name=collectd-core force=yes install_recommends="{{ collectd_install_recommends }}" state=latest
-  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -77,7 +68,6 @@
 - name: Install collectd128 required packages
   with_items: "{{ collectd128_packages }}"
   apt: name="{{ item }}" state="latest"
-  become: yes
   tags:
     - collectd128
     - monitoring
@@ -85,6 +75,7 @@
 
 - name: Download patched collectd
   get_url: url="{{ collectd128_package_url }}" dest="/tmp/{{ collectd128_package_file }}" sha256sum="{{ collectd128_package_sha256 }}"
+  become: no
   tags:
     - collectd128
     - monitoring
@@ -92,7 +83,6 @@
 
 - name: Install patched collectd
   unarchive: copy=no dest="/opt" src="/tmp/{{ collectd128_package_file }}" creates="/opt/{{ collectd128_package }}"
-  become: yes
   notify: restart collectd
   tags:
     - collectd128
@@ -102,13 +92,11 @@
 # There's a dangling link that collectd 5.4 leaves behind, need to research more on this
 - name: unlink /etc/rc2.d/S95collectd
   file: path=/etc/rc2.d/S95collectd state=absent
-  become: yes
   tags:
     - monitoring
 
 - name: Configure collectd
   template: src=collectd.conf.j2 dest=/etc/collectd/collectd.conf
-  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -116,14 +104,12 @@
 
 - name: Remove collectd init.d script
   file: path=/etc/init.d/collectd state=absent
-  become: yes
   tags:
     - monitoring
 
 - name: Install collectd upstart script
   template: src=collectd.conf.upstart.j2 dest=/etc/init/collectd.conf
   notify: restart collectd
-  become: yes
   tags:
     - collectd128
     - monitoring
@@ -134,7 +120,6 @@
 - name: Install zookeeper collectd by copying the python plugin
   copy: src=zk-collectd.py dest="{{ collectd_python_plugin_dir }}"
   when: is_in_masters is defined and is_in_masters|bool
-  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -143,7 +128,6 @@
 - name: Copy the required python plugin mesos_master file
   when: is_in_masters is defined and is_in_masters|bool
   copy: src=mesos-master.py dest="{{ collectd_python_plugin_dir }}"
-  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -152,7 +136,6 @@
 - name: Copy the required python plugin mesos_master-tasks file
   when: is_in_masters is defined and is_in_masters|bool
   copy: src=mesos-master-tasks.py dest="{{ collectd_python_plugin_dir }}"
-  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -161,7 +144,6 @@
 - name: Copy the required python plugin mesos_slave file
   when: is_in_slaves is defined and is_in_slaves|bool
   copy: src=mesos-slave.py dest="{{ collectd_python_plugin_dir }}"
-  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -171,7 +153,6 @@
 - name: Copy the required python plugin bamboo status plugin file
   when: is_in_bamboo_servers is defined and is_in_bamboo_servers|bool
   copy: src=bamboo_status.py dest="{{ collectd_python_plugin_dir }}"
-  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -181,7 +162,6 @@
 - name: Copy the required python plugin bamboo config hash plugin file
   when: is_in_bamboo_servers is defined and is_in_bamboo_servers|bool
   copy: src=bamboo_confighash.py dest="{{ collectd_python_plugin_dir }}"
-  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -191,7 +171,6 @@
 - name: Copy the required python plugin HAProxy
   when: is_in_haproxy is defined
   copy: src=collectd-plugins/collectd-haproxy/haproxy.py dest="{{ collectd_python_plugin_dir }}"
-  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -206,6 +185,7 @@
   failed_when: which_docker.stdout == ""
   ignore_errors: yes
   always_run: yes
+  become: no
   tags:
     - monitoring
     - monitor-docker
@@ -215,7 +195,6 @@
 - name: Install python python-setuptools
   apt: name=python-setuptools state=present
   when: not which_docker.failed
-  become: yes
   tags:
     - monitoring
     - packages
@@ -225,7 +204,6 @@
 - name: Install pip
   easy_install: name=pip
   when: not which_docker.failed
-  become: yes
   tags:
     - monitoring
     - packages
@@ -233,7 +211,6 @@
 
 - name: Install docker and marathon collectd dependency - python-dateutil
   pip: name=python-dateutil version=2.4.2
-  become: yes
   tags:
     - monitoring
     - monitor-docker
@@ -242,7 +219,6 @@
 - name: Install marathon collectd dependency - pytz
   when: is_in_marathon_servers is defined
   pip: name=pytz version=2016.4
-  become: yes
   tags:
     - monitoring
     - monitor-marathon
@@ -250,7 +226,6 @@
 - name: Install docker collectd dependency - docker-py
   pip: name=docker-py version=1.6.0
   when: not which_docker.failed
-  become: yes
   tags:
     - monitoring
     - monitor-docker
@@ -258,7 +233,6 @@
 - name: Install docker collectd by copying the python plugin
   copy: src=collectd-plugins/docker/dockerplugin.py dest="{{ collectd_python_plugin_dir }}"
   when: not which_docker.failed
-  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -267,7 +241,6 @@
 - name: Copy docker collectd TypesDb
   copy: src=collectd-plugins/docker/dockerplugin.db dest="{{ collectd_python_plugin_dir }}"
   when: not which_docker.failed
-  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -276,7 +249,6 @@
 # Make sure this line is removed from /etc/crontab
 - lineinfile: dest=/etc/crontab line="*/10 *  * * *   root    service collectd restart" state=absent
   when: not which_docker.failed
-  become: yes
   tags:
     - monitor-docker
 
@@ -284,14 +256,12 @@
 - name: Add cron to restart collectd every 5 minutes
   when: not which_docker.failed
   cron: name="Collectd restart" minute="*/5" user="root" job="sudo service collectd restart"
-  become: yes
   tags:
     - monitor-docker
 
 - name: Install marathon collectd plugin
   copy: src=collectd-plugins/marathon/marathon.py dest="{{ collectd_python_plugin_dir }}"
   when: is_in_marathon_servers is defined
-  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -300,7 +270,6 @@
 - name: Install marathon_tasks collectd plugin
   copy: src=collectd-plugins/marathon_tasks/marathon_tasks.py dest="{{ collectd_python_plugin_dir }}"
   when: is_in_marathon_servers is defined
-  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -309,7 +278,6 @@
 - name: Install marathon_apps collectd plugin
   copy: src=collectd-plugins/marathon_tasks/marathon_apps.py dest="{{ collectd_python_plugin_dir }}"
   when: is_in_marathon_servers is defined
-  become: yes
   notify: restart collectd
   tags:
     - monitoring
@@ -318,7 +286,6 @@
 - name: Install chronos collectd plugin
   copy: src=collectd-plugins/chronos/chronos.py dest="{{ collectd_python_plugin_dir }}"
   when: is_in_masters is defined and is_in_masters|bool
-  become: yes
   notify: restart collectd
   tags:
     - monitoring
