@@ -119,14 +119,14 @@
 
 - name: Install zookeeper collectd by copying the python plugin
   copy: src=zk-collectd.py dest="{{ collectd_python_plugin_dir }}"
-  when: is_in_masters is defined and is_in_masters|bool
+  when: 'masters' in group_names
   notify: restart collectd
   tags:
     - monitoring
     - monitor-zookeeper
 
 - name: Copy the required python plugin mesos_master file
-  when: is_in_masters is defined and is_in_masters|bool
+  when: 'masters' in group_names
   copy: src=mesos-master.py dest="{{ collectd_python_plugin_dir }}"
   notify: restart collectd
   tags:
@@ -134,7 +134,7 @@
     - monitor-mesos
 
 - name: Copy the required python plugin mesos_master-tasks file
-  when: is_in_masters is defined and is_in_masters|bool
+  when: 'masters' in group_names
   copy: src=mesos-master-tasks.py dest="{{ collectd_python_plugin_dir }}"
   notify: restart collectd
   tags:
@@ -142,7 +142,7 @@
     - monitor-mesos
 
 - name: Copy the required python plugin mesos_slave file
-  when: is_in_slaves is defined and is_in_slaves|bool
+  when: 'slaves' in group_names
   copy: src=mesos-slave.py dest="{{ collectd_python_plugin_dir }}"
   notify: restart collectd
   tags:
@@ -151,7 +151,7 @@
 
 # for bamboo server status check
 - name: Copy the required python plugin bamboo status plugin file
-  when: is_in_bamboo_servers is defined and is_in_bamboo_servers|bool
+  when: 'bamboo_servers' in group_names
   copy: src=bamboo_status.py dest="{{ collectd_python_plugin_dir }}"
   notify: restart collectd
   tags:
@@ -160,7 +160,7 @@
 
 # for bamboo server config-hash check
 - name: Copy the required python plugin bamboo config hash plugin file
-  when: is_in_bamboo_servers is defined and is_in_bamboo_servers|bool
+  when: 'bamboo_servers' in group_names
   copy: src=bamboo_confighash.py dest="{{ collectd_python_plugin_dir }}"
   notify: restart collectd
   tags:
@@ -169,7 +169,7 @@
 
 # for haproxy plugin stats collection
 - name: Copy the required python plugin HAProxy
-  when: is_in_haproxy is defined
+  when: 'haproxy' in group_names
   copy: src=collectd-plugins/collectd-haproxy/haproxy.py dest="{{ collectd_python_plugin_dir }}"
   notify: restart collectd
   tags:
@@ -217,7 +217,7 @@
     - monitor-marathon
 
 - name: Install marathon collectd dependency - pytz
-  when: is_in_marathon_servers is defined
+  when: 'marathon_servers' in group_names
   pip: name=pytz version=2016.4
   tags:
     - monitoring
@@ -261,7 +261,7 @@
 
 - name: Install marathon collectd plugin
   copy: src=collectd-plugins/marathon/marathon.py dest="{{ collectd_python_plugin_dir }}"
-  when: is_in_marathon_servers is defined
+  when: 'marathon_servers' in group_names
   notify: restart collectd
   tags:
     - monitoring
@@ -269,7 +269,7 @@
 
 - name: Install marathon_tasks collectd plugin
   copy: src=collectd-plugins/marathon_tasks/marathon_tasks.py dest="{{ collectd_python_plugin_dir }}"
-  when: is_in_marathon_servers is defined
+  when: 'marathon_servers' in group_names
   notify: restart collectd
   tags:
     - monitoring
@@ -277,7 +277,7 @@
 
 - name: Install marathon_apps collectd plugin
   copy: src=collectd-plugins/marathon_tasks/marathon_apps.py dest="{{ collectd_python_plugin_dir }}"
-  when: is_in_marathon_servers is defined
+  when: 'marathon_servers' in group_names
   notify: restart collectd
   tags:
     - monitoring
@@ -285,7 +285,7 @@
 
 - name: Install chronos collectd plugin
   copy: src=collectd-plugins/chronos/chronos.py dest="{{ collectd_python_plugin_dir }}"
-  when: is_in_masters is defined and is_in_masters|bool
+  when: 'masters' in group_names
   notify: restart collectd
   tags:
     - monitoring
