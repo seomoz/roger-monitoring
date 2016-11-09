@@ -56,7 +56,7 @@ Loadplugin python
    ValuesPercentage true
 </Plugin>
 
-{% if is_in_masters is defined %}
+{% if 'masters' in group_names %}
 # mesos-master python plugin definition
 <Plugin "python">
 ModulePath "{{ collectd_python_plugin_dir }}"
@@ -100,7 +100,7 @@ Import "chronos"
 </Plugin>
 {% endif %}
 
-{% if is_in_slaves is defined %}
+{% if 'slaves' in group_names %}
 # mesos-slave python plugin definition
 <Plugin "python">
 ModulePath "{{ collectd_python_plugin_dir }}"
@@ -127,7 +127,7 @@ Import "mesos-slave"
 </Plugin>
 {% endif %}
 
-{% if is_in_bind_servers is defined %}
+{% if 'bind_servers' in group_names %}
 <Plugin "bind">
   URL "http://127.0.0.1:8053/"
   OpCodes         true
@@ -139,7 +139,7 @@ Import "mesos-slave"
 </Plugin>
 {% endif %}
 
-{% if is_in_bamboo_servers is defined %}
+{% if 'bamboo_servers' in group_names %}
 #bamboo python plugin to check the status
 <Plugin python>
   ModulePath "{{ collectd_python_plugin_dir }}"
@@ -152,7 +152,7 @@ Import "mesos-slave"
 </Plugin>
 {% endif %}
 
-{% if is_in_bamboo_servers is defined %}
+{% if 'bamboo_servers' in group_names %}
 #bamboo python plugin to send the confighash
 <Plugin python>
   ModulePath "{{ collectd_python_plugin_dir }}"
@@ -165,7 +165,7 @@ Import "mesos-slave"
 </Plugin>
 {% endif %}
 
-{% if is_in_haproxy is defined %}
+{% if 'haproxy' in group_names %}
 # Enable HAProxy plugin
 <Plugin python>
     ModulePath "{{ collectd_python_plugin_dir }}"
@@ -193,7 +193,7 @@ Import "mesos-slave"
   Filter "*.conf"
 </Include>
 
-{% if is_in_marathon_servers is defined %}
+{% if 'marathon_servers' in group_names %}
 <Plugin "python">
     ModulePath "{{ collectd_python_plugin_dir }}"
     Import "marathon"
