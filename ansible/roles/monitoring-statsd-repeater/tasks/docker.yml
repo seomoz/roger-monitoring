@@ -1,0 +1,27 @@
+- name: Stop statsd-repeater (if needed)
+  command: "docker stop statsd-repeater"
+  become: yes
+  ignore_errors: yes
+  tags:
+    - monitoring
+    - statsd
+    - statsd-repeater
+
+- name: Remove statsd-repeater (if there)
+  command: "docker rm statsd-repeater"
+  become: yes
+  ignore_errors: yes
+  tags:
+    - monitoring
+    - statsd
+    - statsd-repeater
+
+- name: Run statsd repeater
+  command: "docker run --name=statsd-repeater -p 8125:8125/udp -p 8126:8126 -d --restart=always {{ docker_registry }}/moz-statsd:v0.27"
+  become: yes
+  tags:
+    - monitoring
+    - statsd
+    - statsd-repeater
+
+#TODO: Add/enable a probe so as to monitor this particular statsd instance and alert on failure
